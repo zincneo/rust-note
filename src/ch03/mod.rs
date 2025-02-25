@@ -63,6 +63,29 @@ fn _ch03_02_reference_borrowing() {
     }
 }
 
+fn _ch03_03_slice() {
+    /// ## 切片类型
+    /// - 切片类型通常不会直接使用，而是作为引用存在居多
+    /// - 切片类型[T]，使用切片引用&[T]
+    /// - 最好不要对字符串进行切片，因为rust的字符串是unicode字符，除非确定只有u8字符
+    fn slice() {
+        let s = String::from("中文字符串");
+        // 切不到完整的字符位置导致程序panic
+        // let s_slice = &s[0..7];
+        let s_slice = &s[0..6];
+        println!("{s_slice}");
+        let mut a = [10; 5];
+        fn take_mut_refs(arr: &mut [i32]) {
+            for elem in arr.iter_mut() {
+                *elem *= 2;
+            }
+        }
+        take_mut_refs(&mut a[..]);
+        println!("{:?}", a);
+    }
+    slice();
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -75,5 +98,10 @@ mod tests {
     #[test]
     fn ch03_02() {
         assert_eq!(_ch03_02_reference_borrowing(), ());
+    }
+
+    #[test]
+    fn ch03_03() {
+        assert_eq!(_ch03_03_slice(), ());
     }
 }
