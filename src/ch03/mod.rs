@@ -32,6 +32,37 @@ fn _ch03_01_ownership() {
     ownership();
 }
 
+fn _ch03_02_reference_borrowing() {
+    /// ## rust借用
+    /// - 引用reference和借用borrowing是一个概念
+    /// - rust中存在可变引用和不可变引用两种引用
+    /// - 引用的作用主要是在函数传递参数的时候避免所有权的转移
+    /// - 同一时刻可以存在多个不可变引用或者一个可变引用
+    /// - 不可变引用不可以和可变引用同时存在
+    /// - 由于编译器的进步，只要一个引用之后再也不时候那么就会在最后使用的地方认为其生命周期结束
+    fn reference() {
+        let mut s = String::from("test");
+        let _ref_s = &s;
+        // 同一个时刻存在了可变和不可变引用，但是编译器智能地发现之后再也没有使用过45行定义的不可变引用，于是就在此处结束了它的生命周期
+        let ref_mut_s = &mut s;
+        fn take_reference(str: &mut String) {
+            str.push_str(" test");
+        }
+        take_reference(ref_mut_s);
+        println!("{ref_mut_s}");
+    }
+    reference();
+
+    /// ##悬垂指针
+    /// - 类似c++语言中指针可以返回函数体中的临时变量地址导致
+    /// - rust的引用会检查生命周期，因此无法返回临时变量
+    /// - 如此可以避免一块内存在释放之后再次访问
+    fn _dangle() -> String {
+        // 可以将函数体内创建出来的值所有权转移出去，但是无法返回其引用
+        String::from("test")
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -39,5 +70,10 @@ mod tests {
     #[test]
     fn ch03_01() {
         assert_eq!(_ch03_01_ownership(), ());
+    }
+
+    #[test]
+    fn ch03_02() {
+        assert_eq!(_ch03_02_reference_borrowing(), ());
     }
 }
