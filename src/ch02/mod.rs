@@ -185,6 +185,23 @@ fn _ch02_06_control_flow() {
         println!("{num}");
     }
     _loop();
+
+    /// ## for
+    /// - for 元素 in 集合
+    /// - 需要注意所有权问题
+    /// - range语法start..=end创建序列
+    fn _for() {
+        let a = [3; 5];
+        // [i32; 5]在栈上，发生copy行为
+        for v in a {
+            println!("{v}");
+        }
+        println!("{:#?}", a);
+        for v in 0..=10 {
+            println!("{v}");
+        }
+    }
+    _for();
 }
 
 #[cfg(test)]
