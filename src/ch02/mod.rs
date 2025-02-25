@@ -76,6 +76,29 @@ fn _ch02_02_data_type() {
     compound();
 }
 
+fn _ch02_03_function() {
+    /// ## rust函数
+    /// 1. 使用fn关键字定义
+    /// 2. 编译器会警告未使用的函数
+    /// 3. 参数列表变量需要指明类型
+    /// 4. 函数返回值类型在参数列表后使用-> type 指明
+    /// 5. 函数返回值可以使用return关键字也可以使用函数体内的最后一个表达式
+    /// 6. 函数不写返回值默认返回空元组
+    /// 7. 函数返回!表示该函数永远没法正常结束，对应数学上发散的概念，称之为发散函数
+    fn functions() {
+        fn add(i: i32, j: i32) -> i32 {
+            i + j
+        }
+        add(3, 4);
+        fn _loop() -> ! {
+            loop {
+                println!("死循环的发散函数");
+            }
+        }
+    }
+    functions();
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -88,5 +111,10 @@ mod tests {
     #[test]
     fn ch02_02() {
         assert_eq!(_ch02_02_data_type(), ());
+    }
+
+    #[test]
+    fn ch02_03() {
+        assert_eq!(_ch02_03_function(), ());
     }
 }
