@@ -99,6 +99,31 @@ fn _ch02_03_function() {
     functions();
 }
 
+fn _ch02_04_statement_expression() {
+    /// ## rust语句
+    /// 1. rust中没有返回值的就是语句
+    /// 2. 变量定义是语句必须要使用;结尾
+    /// 3. 其他所有表达式;都是语句
+    fn statement() {
+        let _i = 10;
+    }
+    statement();
+
+    /// ## rust表达式
+    /// 1. rust中任何有返回值的都是表达式
+    /// 2. {}代码块将最后一个表达式作为返回值
+    /// 3. loop代码块的返回值特殊，详细见流程控制
+    fn expression() {
+        let _y = {};
+        let _y = {
+            let x = 100;
+            println!("{x}");
+            x * 2
+        };
+    }
+    expression();
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -116,5 +141,10 @@ mod tests {
     #[test]
     fn ch02_03() {
         assert_eq!(_ch02_03_function(), ());
+    }
+
+    #[test]
+    fn ch02_04() {
+        assert_eq!(_ch02_04_statement_expression(), ());
     }
 }
