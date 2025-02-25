@@ -124,6 +124,69 @@ fn _ch02_04_statement_expression() {
     expression();
 }
 
+fn _ch02_05_comment() {
+    /// ## rust注释
+    /// rust中使用//表示行注释
+    fn comment() {
+        // 这是行注释
+    }
+    comment();
+}
+
+fn _ch02_06_control_flow() {
+    /// ## if
+    /// 1. rust支持if else else if关键字
+    /// 2. 满足if expression表达式则会进入{}代码块
+    fn if_else_elseif() {
+        let condition = 100;
+        let num = if condition % 2 == 1 && condition > 10 {
+            10
+        } else if condition % 2 == 0 && condition < 50 {
+            20
+        } else {
+            0
+        };
+        println!("{num}");
+    }
+    if_else_elseif();
+
+    /// ## while
+    /// 1. while expression 不满足表达式时跳出循环
+    /// 2. while 作为表达式只返回空元组()
+    fn _while() {
+        let mut condition = 100;
+        let _n = while condition != 0 {
+            condition /= 5;
+        };
+        println!("_while");
+    }
+    _while();
+
+    /// ## loop
+    /// 1. loop返回值需要使用break关键字指定
+    /// 2. loop可以使用标签语法'label_name: loop
+    /// 3. break关键字可以关联到标签跳出指定标签的loop
+    fn _loop() {
+        let mut condition = 100;
+        let num = 'out: loop {
+            let mut count = 10;
+            loop {
+                if count > 100 && count % 2 != 1 {
+                    condition /= 2;
+                    break 'out condition ^ 0b0011_1111_0110_0111_1100_1010;
+                } else if count <= 100 && count % 2 == 0 {
+                    condition += 1;
+                    count += 1;
+                } else {
+                    count += 3;
+                }
+            }
+        };
+        println!("{num}");
+    }
+    _loop();
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -146,5 +209,15 @@ mod tests {
     #[test]
     fn ch02_04() {
         assert_eq!(_ch02_04_statement_expression(), ());
+    }
+
+    #[test]
+    fn ch02_05() {
+        assert_eq!(_ch02_05_comment(), ());
+    }
+
+    #[test]
+    fn ch02_06() {
+        assert_eq!(_ch02_06_control_flow(), ());
     }
 }
