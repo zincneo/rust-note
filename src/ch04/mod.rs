@@ -6,6 +6,7 @@ fn _ch04_01_structure() {
     ///     2. struct DataType() 元组
     ///     3. struct DataType 没有属性
     fn structure() {
+        #[allow(dead_code)]
         struct User {
             active: bool,
             username: String,
@@ -25,6 +26,7 @@ fn _ch04_01_structure() {
             email: String::from("another@example.com"),
             ..user1
         };
+        println!("{}", user1.email);
         fn _build_user(email: String, username: String) -> User {
             // 属性赋值缩写形式
             User {
@@ -45,6 +47,33 @@ fn _ch04_01_structure() {
     structure();
 }
 
+fn _ch04_02_using_struct() {
+    /// ## 结构体的使用
+    /// - 使用结构体将本该关联的数据封装起来
+    /// - 特征初探->让编译器自动实现Debug特征
+    fn using() {
+        struct Rect(i32, i32);
+        let rect1 = Rect(10, 10);
+        // println宏无法直接打印结构体
+        println!("{} {}", rect1.0, rect1.1);
+        // Debug宏可以让println宏以调试方式打印结构体
+        #[derive(Debug)]
+        #[allow(dead_code)]
+        struct Rectangle {
+            width: u32,
+            height: u32,
+        }
+        let rect1 = Rectangle {
+            width: 30,
+            height: 50,
+        };
+        // 调试方式输出占位{:?}
+        // 更加可读的调试方式输出占位{:#?}
+        println!("rect1 is \n{:#?}", rect1);
+    }
+    using();
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -52,5 +81,10 @@ mod tests {
     #[test]
     fn ch04_01() {
         assert_eq!(_ch04_01_structure(), ());
+    }
+
+    #[test]
+    fn ch04_02() {
+        assert_eq!(_ch04_02_using_struct(), ());
     }
 }
