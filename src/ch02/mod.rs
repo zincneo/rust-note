@@ -133,6 +133,8 @@ fn _ch02_05_comment() {
     comment();
 }
 
+/// ## 控制流
+/// 使用到的关键字: if、else、else if、while、loop、for、break、continue
 fn _ch02_06_control_flow() {
     /// ## if
     /// 1. rust支持if else else if关键字
@@ -190,6 +192,7 @@ fn _ch02_06_control_flow() {
     /// - for 元素 in 集合
     /// - 需要注意所有权问题
     /// - range语法start..=end创建序列
+    /// - continue关键字在for while loop中均可以使用
     fn _for() {
         let a = [3; 5];
         // [i32; 5]在栈上，发生copy行为
@@ -198,6 +201,9 @@ fn _ch02_06_control_flow() {
         }
         println!("{:#?}", a);
         for v in 0..=10 {
+            if v == 5 {
+                continue;
+            }
             println!("{v}");
         }
     }
