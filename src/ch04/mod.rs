@@ -74,6 +74,48 @@ fn _ch04_02_using_struct() {
     using();
 }
 
+fn _ch04_03_method() {
+    /// ## 方法
+    /// - 通过impl DataType {}来为结构体实现属于结构体的方法
+    /// - 通过实例.method()进行调用
+    /// - rust会调用方法的时候会自动解引用因此没有->
+    /// - 实例方法的第一个参数是self
+    /// - 后续章节有详细解释，这里简单了解对实例本身可以有以下获取方式
+    ///     - self
+    ///     - &self
+    ///     - &mut self
+    /// - 方法没有self参数的称为关联方法，即可以通过结构体类型名进行调用，不可以使用实例调用
+    /// - 在impl块中Self表示结构体类型本身
+    /// - 对于同一个结构体可以有多个impl块
+    fn method() {
+        #[derive(Debug)]
+        struct Rectangle {
+            width: u32,
+            height: u32,
+        }
+        #[allow(dead_code)]
+        impl Rectangle {
+            fn area(&self) -> u32 {
+                self.width * self.height
+            }
+            fn square(size: u32) -> Self {
+                Self {
+                    width: size,
+                    height: size,
+                }
+            }
+        }
+        let rect1 = Rectangle {
+            width: 30,
+            height: 50,
+        };
+        let area = rect1.area();
+        println!("The area of the rectangle is {} square pixels.", area);
+        let _rect2 = Rectangle::square(10);
+    }
+    method();
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
