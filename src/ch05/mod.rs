@@ -126,6 +126,40 @@ fn _ch05_03_if_let() {
     if_let();
 }
 
+fn _ch05_04_additions() {
+    /// ## 模式匹配补充
+    /// - match的值可以使用|运算符表示匹配多个值
+    /// - while let 循环体，当let匹配不到的时候结束
+    /// - matches 宏
+    ///     - 用来匹配表达式和宏
+    ///     - 返回布尔值
+    ///     - 同样用来解决枚举值无法使用==运算符之类的情况
+    fn additions() {
+        match 1 {
+            0 | 1 => {
+                println!("0 | 1");
+            }
+            _ => (),
+        }
+        let mut stack = Vec::new();
+        stack.push(1);
+        stack.push(2);
+        stack.push(3);
+        while let Some(v) = stack.pop() {
+            println!("{v}");
+        }
+        enum MyEnum {
+            Foo,
+            Bar,
+        }
+        let v = vec![MyEnum::Foo, MyEnum::Bar, MyEnum::Foo];
+        // 获取到MyEnum::Bar的项
+        // 但是MyEnum的值不可以使用==
+        let _v = v.iter().filter(|x| matches!(x, MyEnum::Bar));
+    }
+    additions();
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -143,5 +177,10 @@ mod tests {
     #[test]
     fn ch05_03() {
         assert_eq!(_ch05_03_if_let(), ());
+    }
+
+    #[test]
+    fn ch05_04() {
+        assert_eq!(_ch05_04_additions(), ());
     }
 }
