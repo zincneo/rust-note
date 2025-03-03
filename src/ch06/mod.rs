@@ -77,6 +77,44 @@ fn _ch06_02_mod() {
     _mod();
 }
 
+fn _ch06_03_use() {
+    /// ## use
+    /// - use关键字用来将某个模块中的内容暴露到当前模块下使用
+    /// - 多个模块中的内容重名的时候使用use和as关键字来解决冲突
+    /// - pub关键字加在use前面表示导入的内容作为当前包的内容再导出的时候设置为可见
+    ///   1. pub 意味着可见性无任何限制
+    ///   2. pub(crate) 表示在当前包可见
+    ///   3. pub(self) 在当前模块可见
+    ///   4. pub(super) 在父模块可见
+    ///   5. pub(in <path>) 表示在某个路径代表的模块中可见，其中 path 必须是父模块或者祖先模块
+    /// - 简化导出使用{}
+    /// - 使用*使用mod下的所有项
+    #[allow(unused)]
+    fn _use() {
+        // as解决冲突
+        use std::fmt::Result;
+        use std::io::Result as IoResult;
+        mod front_of_house {
+            pub mod hosting {
+                pub fn add_to_waitlist() {}
+            }
+        }
+        // 在当前mod使用hosting并且设置再次导出的时候被外部包可见
+        pub use front_of_house::hosting;
+        mod a {
+            pub fn aa() {}
+            pub fn ab() {}
+        }
+        pub use a::{aa, ab};
+        mod b {
+            pub fn ba() {}
+            pub fn bb() {}
+        }
+        pub use b::*;
+    }
+    _use();
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -89,5 +127,10 @@ mod tests {
     #[test]
     fn ch06_02() {
         assert_eq!(_ch06_02_mod(), ());
+    }
+
+    #[test]
+    fn ch06_03() {
+        assert_eq!(_ch06_03_use(), ());
     }
 }
