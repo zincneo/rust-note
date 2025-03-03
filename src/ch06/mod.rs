@@ -40,6 +40,43 @@ fn _ch06_01_project() {
     project();
 }
 
+fn _ch06_test() {
+    println!("this is ch06 mod");
+}
+
+fn _ch06_02_mod() {
+    /// ## 模块
+    /// - 使用mod关键字可以定义模块，关键字后面直接跟着模块名
+    /// - 模块可以嵌套
+    /// - 模块中可以定义各种Rust类型，例如函数，结构体，枚举，特征等等
+    /// - 一个模块的所有定义必须在同一个文件内
+    /// - 使用模块
+    ///   - 绝对路径，以crate为起点
+    ///   - 相对路径，以self,super或者当前模块的标识符作为开头
+    /// - 当lib.rs中使用mod mode_name声明的时候就可以将模块子模块拆分到src/mode_name.rs或者src/mode_name/mod.rs中
+    /// - 模块下的内容默认只对本身以及内部嵌套的子模块可见，模块内部的内容想被外部访问需要加上pub关键字
+    ///   - 结构体设置为pub的时候属性和方法任然是外部不可见的，希望外部可以访问还要在属性和方法前面加上pub
+    ///   - 枚举设置pub的时候所有字段对外部都是可见的
+    fn _mod() {
+        #[allow(dead_code)]
+        mod front_of_house {
+            fn add_to_waitlist() {
+                println!("add to wait list");
+            }
+            // pub关键字让方法被模块外可见
+            pub fn seat_at_table() {
+                // 绝对路径
+                crate::ch06::_ch06_test();
+                // 相对路径
+                self::add_to_waitlist();
+                println!("seat at table");
+            }
+        }
+        front_of_house::seat_at_table();
+    }
+    _mod();
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -47,5 +84,10 @@ mod tests {
     #[test]
     fn ch06_01() {
         assert_eq!(_ch06_01_project(), ());
+    }
+
+    #[test]
+    fn ch06_02() {
+        assert_eq!(_ch06_02_mod(), ());
     }
 }
