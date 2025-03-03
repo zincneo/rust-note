@@ -83,6 +83,49 @@ fn _ch05_02_match() {
     match_sample();
 }
 
+fn _ch05_03_if_let() {
+    /// ## 模式匹配if let
+    /// - match的语法糖
+    /// - if let value = variable {}
+    /// - 在只需要匹配一个值的或者Option枚举的时候很常用
+    ///     - 注意Option枚举是不可以使用==运算符比较值的
+    /// - 不需要穷尽匹配
+    /// - if let 支持 else 语句
+    fn if_let() {
+        let config_max = Some(1000);
+        // 使用match
+        match config_max {
+            Some(value) => {
+                println!("{value}");
+            }
+            None => (),
+        };
+        // 使用if let
+        if let Some(1000) = config_max {
+            println!("1000");
+        }
+
+        if let Some(value @ 100..=1000) = config_max {
+            println!("{value}");
+        }
+
+        #[allow(dead_code)]
+        enum Coin {
+            Penny,
+            Nickel,
+            Dime,
+            Quarter,
+        }
+        let coin = Coin::Dime;
+        if let Coin::Penny = coin {
+            println!("Penny");
+        } else {
+            println!("Others");
+        }
+    }
+    if_let();
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -95,5 +138,10 @@ mod tests {
     #[test]
     fn ch05_02() {
         assert_eq!(_ch05_02_match(), ());
+    }
+
+    #[test]
+    fn ch05_03() {
+        assert_eq!(_ch05_03_if_let(), ());
     }
 }
