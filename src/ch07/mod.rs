@@ -129,7 +129,7 @@ fn _ch07_02_trait() {
         // 等价写法
         fn _notify_1<T: Summary + Display>(item: &T) {}
         // 如果函数签名过长可以使用where关键字在返回值之后和函数体之前写上约束
-        fn _notify_2<T>(item: &t) -> ()
+        fn _notify_2<T>(item: &T) -> ()
         where
             T: Summary + Display,
         {
@@ -146,6 +146,54 @@ fn _ch07_02_trait() {
     _trait();
 }
 
+fn _ch07_03_trait_obj() {
+    /// ## 特征对象
+    /// - 对于trait可以使用dyn关键字
+    /// - dyn trait_name表示是堆上一个实现了该特征的对象，因此称为特征对象
+    /// - dyn 只作为引用或者智能指针出现
+    ///   - &dyn trait_name
+    ///   - Box<dyn trait_name>
+    /// - 实现方法类似c++的虚函数表，在栈上保存的数据除了指向对象的指针外还包含了指向该对象的类型对特征方法实现的指针
+    /// - dyn只能作用于对象安全的特征
+    ///   - 特征包含的方法返回值不能是Self
+    ///   - 特征包含的方法没有任何泛型参数
+    fn trait_object() {
+        trait Draw {
+            fn draw(&self) {
+                println!("default draw");
+            }
+        }
+        struct Button;
+        struct List;
+        impl Draw for Button {
+            fn draw(&self) {
+                println!("Button draw");
+            }
+        }
+        impl Draw for List {
+            fn draw(&self) {
+                println!("List draw");
+            }
+        }
+        impl Draw for u8 {
+            fn draw(&self) {
+                println!("u8 draw");
+            }
+        }
+        fn draw_objs(objs: Vec<Box<dyn Draw>>) {
+            for obj in objs.iter() {
+                obj.draw();
+            }
+        }
+        let mut objs = Vec::<Box<dyn Draw>>::new();
+        objs.push(Box::new(8_u8));
+        objs.push(Box::new(Button));
+        objs.push(Box::new(List));
+        draw_objs(objs);
+    }
+    trait_object();
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -158,5 +206,10 @@ mod tests {
     #[test]
     fn ch07_02() {
         assert_eq!(_ch07_02_trait(), ());
+    }
+
+    #[test]
+    fn ch07_03() {
+        assert_eq!(_ch07_03_trait_obj(), ());
     }
 }
