@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 fn _ch07_01_generics() {
     /// ## 泛型
     /// - 泛型就是一种多态
@@ -55,6 +57,95 @@ fn _ch07_01_generics() {
     const_generics();
 }
 
+fn _ch07_02_trait() {
+    /// ## 特征
+    /// - rust的结构体没有继承，因此没有办法通过类似c++那样的虚函数表的方式实现多态
+    ///    - 过于复杂的继承会导致分不清楚成员属性和成员方法到底是哪一个层级的属性
+    ///    - 使用组合(在一个结构体内提供另外一个结构体作为成员属性)可以解决继承导致的属性和方法结构过于复杂的问题
+    /// - 因此为了实现共享相同行为(多态)，rust提供了特征
+    /// - 特征定义了一组可以被共享的行为，只要实现了特征，就能使用这组行为
+    /// - 特征必须要遵循孤儿规则，即要为A实现特征T，则A和T至少要有一个在当前的作用域中定义
+    /// - 实现特征的语法 impl trait_name for struct_name_or_enum_name {}
+    /// - 特征中的函数可以只有声明也可以提供默认实现
+    /// - 将特征作为函数参数 fn function_name(item: &impl trait_name)
+    /// - 特征约束
+    ///   - 在泛型的参数列表中使用<T: trait_name> 表示T这种类型必须实现指定的特征
+    ///   - 上面的将特征作为函数参数其实就是这种写法的语法糖
+    ///   - 特征约束可以是多重的，这时候可以使用+运算符表示希望被多个特征约束<T: trait_name1 + trait_name2>
+    ///   - 如果约束太多导致函数签名过于复杂的时候可以使用where约束
+    /// - 特征作为函数的返回值fn function_name() -> impl trait_name
+    ///   - 只能返回一种具体实现的类型
+    #[allow(unused)]
+    fn _trait() {
+        trait Summary {
+            fn summarize(&self) -> String;
+        }
+        struct Post {
+            title: String,   // 标题
+            author: String,  // 作者
+            content: String, // 内容
+        }
+
+        impl Summary for Post {
+            fn summarize(&self) -> String {
+                format!(
+                    "文章{}, 作者是{}, 内容是{}",
+                    self.title, self.author, self.content
+                )
+            }
+        }
+
+        struct Weibo {
+            username: String,
+            content: String,
+        }
+
+        impl Summary for Weibo {
+            fn summarize(&self) -> String {
+                format!("{}发表了微博{}", self.username, self.content)
+            }
+        }
+
+        // Post和Weibo类型都已经实现了Summary特征，因此实例都可以使用summarize方法
+        // rust通过特征来实现多态
+        // 类比c++中泛型通过数组来存储父类指针，到实际使用的时候通过虚函数表来实现多态
+        // rust中使用动态数组包含智能指针Box指向堆上实现了对应特征的类型来实现多态
+        let mut messages = Vec::<Box<dyn Summary>>::new();
+        messages.push(Box::new(Post {
+            title: String::from("post"),
+            author: String::from("neo"),
+            content: String::from("post"),
+        }));
+        messages.push(Box::new(Weibo {
+            username: String::from("neo"),
+            content: String::from("weibo"),
+        }));
+        for m in messages.iter() {
+            println!("{}", m.summarize());
+        }
+
+        // 特征约束
+        fn _notify_0(item: &(impl Summary + Display)) {}
+        // 等价写法
+        fn _notify_1<T: Summary + Display>(item: &T) {}
+        // 如果函数签名过长可以使用where关键字在返回值之后和函数体之前写上约束
+        fn _notify_2<T>(item: &t) -> ()
+        where
+            T: Summary + Display,
+        {
+        }
+
+        // 特征作为返回值，函数体内只有具体的一种类型
+        fn returns_summarizable() -> impl Summary {
+            Weibo {
+                username: String::from("neo"),
+                content: String::from("weibo"),
+            }
+        }
+    }
+    _trait();
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -62,5 +153,10 @@ mod tests {
     #[test]
     fn ch07_01() {
         assert_eq!(_ch07_01_generics(), ());
+    }
+
+    #[test]
+    fn ch07_02() {
+        assert_eq!(_ch07_02_trait(), ());
     }
 }
