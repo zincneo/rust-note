@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 fn _ch08_01_vec() {
     /// ## 动态数组
     /// - rust提供的基础类型数组的长度是固定的
@@ -66,6 +68,21 @@ fn _ch08_02_string() {
     string();
 }
 
+fn _ch08_03_map() {
+    /// ## 哈希表
+    /// - 标准库提供的HashMap类型
+    /// - key->value HashMap<K, V>
+    fn map() {
+        let mut scores = HashMap::new();
+        scores.insert(String::from("Blue"), 80);
+        scores.insert(String::from("Yello"), 30);
+        for (k, v) in scores.iter() {
+            println!("{k} : {v}");
+        }
+    }
+    map();
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -77,5 +94,10 @@ mod tests {
     #[test]
     fn ch08_02() {
         assert_eq!(_ch08_02_string(), ());
+    }
+
+    #[test]
+    fn ch08_03() {
+        assert_eq!(_ch08_03_map(), ());
     }
 }
