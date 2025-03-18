@@ -66,7 +66,7 @@ fn _ch06_02_mod() {
             // pub关键字让方法被模块外可见
             pub fn seat_at_table() {
                 // 绝对路径
-                crate::ch06::_ch06_test();
+                crate::basic::ch06::_ch06_test();
                 // 相对路径
                 self::add_to_waitlist();
                 println!("seat at table");

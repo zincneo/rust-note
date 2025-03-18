@@ -27,7 +27,7 @@ fn _ch12_02_doc_block_comment() {}
 /// - 在文档测试代码块中不想被外部看到但是任然在测试的时候运行代码可以使用#注释
 /// ```rust
 /// let arg = 5;
-/// let answer = rust_note::ch12::add_one(arg);
+/// let answer = rust_note::basic::ch12::add_one(arg);
 /// assert_eq!(6, answer);
 /// ```
 ///
@@ -36,8 +36,8 @@ fn _ch12_02_doc_block_comment() {}
 /// ```
 ///
 /// ```rust,should_panic
-/// rust_note::ch12::add_one(1);
-/// # rust_note::ch12::add_one(1); // 还会运行，代码在文档中看不到
+/// rust_note::basic::ch12::add_one(1);
+/// # rust_note::basic::ch12::add_one(1); // 还会运行，代码在文档中看不到
 /// ```
 pub fn add_one(x: i32) -> i32 {
     if let 1 = x {
