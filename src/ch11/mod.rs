@@ -13,6 +13,27 @@ fn _ch11_01_output_macro() {
     eprintln!("Error: Could not complete task");
 }
 
+/// ## 格式化占位符
+/// - rust在格式化输出中提供了{}和{:?}作为占位符
+/// - {}适用于std::fmt::Display特征的数据类型
+/// - {:?}适用于std::fmt::Debug特征的数据类型
+/// - 实际上大多数标准库中提供的类型都实现了Debug特征
+fn _ch11_02_placeholder() {
+    #[derive(Debug)]
+    struct Person {
+        name: String,
+        age: u8,
+    }
+    let i = 3.1415926;
+    let s = String::from("hello");
+    let v = vec![1, 2, 3];
+    let p = Person {
+        name: "sunface".to_string(),
+        age: 18,
+    };
+    println!("{:?}, {:?}, {:?}, {:?}", i, s, v, p);
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -20,5 +41,10 @@ mod tests {
     #[test]
     fn ch11_01() {
         assert_eq!(_ch11_01_output_macro(), ());
+    }
+
+    #[test]
+    fn ch11_02() {
+        assert_eq!(_ch11_02_placeholder(), ());
     }
 }
