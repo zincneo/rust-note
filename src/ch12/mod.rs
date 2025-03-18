@@ -4,6 +4,8 @@
 - 必须放在整个包或者模块的开头
 */
 
+use core::panic;
+
 /// ## 文档行注释
 /// - rust提供了`cargo doc`命令可以将文档注释转换为HTML网页
 /// - 使用///表示文档行注释
@@ -21,6 +23,8 @@ fn _ch12_02_doc_block_comment() {}
 /// - 文档注释中的代码块会被`cargo test`的时候运行作为单元测试
 /// - 只想运行文档测试的话使用`cargo test --doc`
 /// - 不想运行的代码块需要标明ignore
+/// - 应该panic的代码块需要标明rust,should_panic
+/// - 在文档测试代码块中不想被外部看到但是任然在测试的时候运行代码可以使用#注释
 /// ```rust
 /// let arg = 5;
 /// let answer = rust_note::ch12::add_one(arg);
@@ -30,7 +34,15 @@ fn _ch12_02_doc_block_comment() {}
 /// ```ignore
 /// // 忽略这个代码块
 /// ```
+///
+/// ```rust,should_panic
+/// rust_note::ch12::add_one(1);
+/// # rust_note::ch12::add_one(1); // 还会运行，代码在文档中看不到
+/// ```
 pub fn add_one(x: i32) -> i32 {
+    if let 1 = x {
+        panic!("不要输入1");
+    }
     x + 1
 }
 
