@@ -126,9 +126,13 @@ fn _ch02_04_statement_expression() {
 
 fn _ch02_05_comment() {
     /// ## rust注释
-    /// rust中使用//表示行注释
+    /// - 使用//表示行注释
+    /// - 使用/**/表示块注释
     fn comment() {
         // 这是行注释
+        /*
+         * 块注释
+         */
     }
     comment();
 }
