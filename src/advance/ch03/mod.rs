@@ -292,11 +292,60 @@ fn _ch03_04_rc_arc() {
         let s = Arc::new(String::from("use between multiple threads"));
         for i in 0..10 {
             let s = Arc::clone(&s);
-            thread::spawn(move || {
+            let _ = thread::spawn(move || {
                 println!("{} : {:#?}", i, s);
             })
             .join();
         }
+    }
+}
+
+/**
+## 内部可变性
+- Cell和RefCell两个类型提供了在使用不可变引用的情况下修改内部值的能力
+- 底层是通过unsafe包裹的
+- Cell适用于实现了Copy特征的类型
+- Rust本身的所有权规则
+  - 一个数据只能有一个所有者
+  - 要么是多个不可变借用要么一个可变借用
+  - 违反规则编译不通过
+- 由于智能指针带来的额外规则
+  - Rc/Arc让一个数据拥有多个所有者
+  - RefCell实现编译期可变，不可变引用共存
+  - 违背规则会导致运行期panic，也就是还是要遵循所有权原则，否则也是绕过编译期到运行的时候panic
+- Cell用于提供值，而RefCell用于提供引用
+- Cell不会引起panic，而RefCell会
+*/
+fn _ch03_05_cell_refcell() {
+    // 1. Cell
+    {
+        use std::cell::Cell;
+        let c = Cell::new(10);
+        let one = c.get();
+        c.set(20);
+        let two = c.get();
+        println!("{} {}", one, two);
+    }
+    // 2. RefCell
+    {
+        use std::cell::RefCell;
+        {
+            let s = RefCell::new(String::from("hello, world"));
+            let _s1 = s.borrow();
+            // let _s2 = s.borrow_mut(); // 运行期间panic
+
+            // println!("{},{}", s1, s2); // 运行期间panic
+        }
+    }
+    // 3. Rc和RefCell结合使用
+    {
+        use std::cell::RefCell;
+        use std::rc::Rc;
+        let s = Rc::new(RefCell::new("chatgpt".to_string()));
+        let s1 = s.clone();
+        let s2 = s.clone();
+        s2.borrow_mut().push_str(" claude");
+        println!("{:?} {:?}", s1, s2);
     }
 }
 
@@ -322,5 +371,10 @@ mod tests {
     #[test]
     fn ch03_04() {
         assert_eq!(_ch03_04_rc_arc(), ());
+    }
+
+    #[test]
+    fn ch03_05() {
+        assert_eq!(_ch03_05_cell_refcell(), ());
     }
 }
