@@ -68,6 +68,87 @@ fn _ch03_01_box() {
     let sum = **first + **second;
 }
 
+/**
+## Deref
+- 通过*运算符可以获取引用的值
+- 表达式必须手动调用*解除引用
+- 通过实现Deref特征自定义类型可以实现*解引用一样的行为
+  - 该特征必须实现方法deref，这个方法会返回一个&引用类型
+  - 因此对于实现该特征的结构体调用`*varibale`等价于调用了`*(variable.deref())`
+- 函数和方法以及赋值操作会有隐式的解引用行为
+  - 若一个类型实现了 Deref 特征，那它的引用在传给函数或方法时，会根据参数签名来决定是否进行隐式的 Deref 转换
+  - 注意一定是在实参传递的时候使用&传递才会触发隐式的Deref
+  - Deref可以连续触发，直到找到合适的形式
+- 引用归一化
+  - rust在做解引用的时候会将智能指针和&&&&&v的形式做引用归一化操作转换为&v，再做解引用
+- Deref特征有三种情况
+  - Deref 不可变/可变 -> 不可变
+  - DerefMut 可变 -> 可变
+*/
+fn _ch03_02_deref() {
+    let x = 5;
+    let y = &x;
+    assert_eq!(5, x);
+
+    // 1. 使用*解除&类型的引用
+    assert_eq!(5, *y);
+
+    // 2. 使用*解除Box智能指针的引用
+    let x = Box::new(5);
+    assert_eq!(5, *x);
+
+    // 3. 自定义类型实现Deref特征后也可以使用*运算符解引用
+    use std::ops::Deref;
+    #[derive(Debug)]
+    struct MyBox<T>(T);
+    impl<T> MyBox<T> {
+        fn new(x: T) -> Self {
+            MyBox(x)
+        }
+    }
+    impl<T> Deref for MyBox<T> {
+        type Target = T;
+        fn deref(&self) -> &Self::Target {
+            &self.0
+        }
+    }
+    let x = MyBox::new(10);
+    println!("{:?}", x);
+    let x = *x + 1;
+    println!("{:?}", x);
+
+    // 4. 隐式转换
+    {
+        fn display(s: &str) {
+            println!("{}", s);
+        }
+        let s = String::from("hello world");
+        // 1. String类型实现了Deref
+        // 2. 调用display的时候传递&String
+        // 3. 隐式地调用String的deref方法转换为&str
+        // 4. 必须是通过&s这种方式才会触发Deref
+        display(&s);
+    }
+
+    // 5. 连续触发Deref的例子
+    let s = MyBox::new(String::from("hello, world"));
+    let _s1: &str = &s; // &s -> &MyBox::deref -> &String::deref -> &str
+    let _s2: String = s.to_string();
+
+    // 6. 引用归一化
+    // 标准库源代码
+    /*
+     * impl<T: ?Sized> Deref for &T {
+     *   type Target = T;
+     *   fn deref(&self) -> &T {
+     *     *self
+     *   }
+     * }
+     */
+    // 由源码可以看到遇到&&&&v这的情况就会发生递归解引用
+    // &(&&&v.deref()) -> &(&&v.deref()) -> &(&v.deref()) -> &(v.deref())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -75,5 +156,10 @@ mod tests {
     #[test]
     fn ch03_01() {
         assert_eq!(_ch03_01_box(), ());
+    }
+
+    #[test]
+    fn ch03_02() {
+        assert_eq!(_ch03_02_deref(), ());
     }
 }
