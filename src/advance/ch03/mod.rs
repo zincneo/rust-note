@@ -200,6 +200,106 @@ fn _ch03_03_drop() {
     println!("Running!");
 }
 
+/**
+## 引用计数
+- Rust所有权机制要求一个值只能有一个所有者，但有些场景任然需要一份数据被多个变量持有
+  - 图数据结构中，多个边可能会拥有同一个节点，直到没有任何边指向的时候才应该被清理
+  - 多线程中，多个线程可能持有同一个数据，但是受限与Rust所有权机制，无法获取多份该数据的可变引用
+- Rc 引用计数，不支持多线程安全
+  - Rc::new()将包裹的值move到堆上，栈上使用这个智能指针
+  - Rc::clone()拷贝一份栈上的智能指针，指向同一块堆内存，且引用计数加1
+  - Rc<T>的底层是指向T的不可变引用，因此无法通过Rc来修改数据，如果需要修改值就要用到内部可变性的RefCell包裹T，再让Rc包裹RefCell
+  - 如果在创建线程的时候在传递给线程的闭包前加上move关键字，那么在闭包内将Rc传递过去的时候编译器就会直接报错
+- Arc 线程安全的引用计数
+  - 用法和Rc一样，底层都是不可变引用，但是Arc是保证线程间安全的，可以在不同线程间传递
+  - 性能相对与Rc因为要保证原子化因此更差
+*/
+fn _ch03_04_rc_arc() {
+    // 1. 由于所有权导致报错的例子
+    {
+        let s = String::from("Rust String");
+        let _a = Box::new(s); // s发生了所有权的move
+                              // let b = Box::new(s); // 报错，因为s移动到了堆上且被a拥有，不可以再使用s
+    }
+    // 2. 使用Rc引用计数让一个堆上数据被多个所有者拥有
+    {
+        use std::rc::Rc;
+        let a = Rc::new(String::from("hello, world"));
+        let b = Rc::clone(&a);
+        // 查看引用计数
+        assert_eq!(2, Rc::strong_count(&a));
+        assert_eq!(Rc::strong_count(&a), Rc::strong_count(&b));
+
+        let a = Rc::new(String::from("test ref counting"));
+        println!("count after creating a = {}", Rc::strong_count(&a));
+        let _b = Rc::clone(&a);
+        println!("count after creating b = {}", Rc::strong_count(&a));
+        {
+            let c = Rc::clone(&a);
+            println!("count after creating c = {}", Rc::strong_count(&c));
+        }
+        println!("count after c goes out of scope = {}", Rc::strong_count(&a));
+    }
+    // 3. Rc的一个实际的例子
+    {
+        use std::rc::Rc;
+        #[derive(Debug)]
+        struct Owner {
+            name: String,
+        }
+
+        impl Owner {
+            fn new(name: String) -> Self {
+                Self { name }
+            }
+        }
+
+        #[derive(Debug)]
+        struct Gadget {
+            id: i32,
+            owner: Rc<Owner>,
+        }
+        let gadget_owner: Rc<Owner> = Rc::new(Owner::new("Gadget Man".to_string()));
+
+        // 创建两个不同的工具，它们属于同一个主人
+        let gadget1 = Gadget {
+            id: 1,
+            owner: Rc::clone(&gadget_owner),
+        };
+        let gadget2 = Gadget {
+            id: 2,
+            owner: Rc::clone(&gadget_owner),
+        };
+
+        // 释放掉第一个 `Rc<Owner>`
+        drop(gadget_owner);
+        // 尽管在上面我们释放了 gadget_owner，但是依然可以在这里使用 owner 的信息
+        // 原因是在 drop 之前，存在三个指向 Gadget Man 的智能指针引用，上面仅仅
+        // drop 掉其中一个智能指针引用，而不是 drop 掉 owner 数据，外面还有两个
+        // 引用指向底层的 owner 数据，引用计数尚未清零
+        // 因此 owner 数据依然可以被使用
+        println!("Gadget {} owned by {}", gadget1.id, gadget1.owner.name);
+        println!("Gadget {} owned by {}", gadget2.id, gadget2.owner.name);
+
+        // 在函数最后，`gadget1` 和 `gadget2` 也被释放，最终引用计数归零，随后底层
+        // 数据也被清理释放
+    }
+
+    // 4. 线程间安全的Arc
+    {
+        use std::sync::Arc;
+        use std::thread;
+        let s = Arc::new(String::from("use between multiple threads"));
+        for i in 0..10 {
+            let s = Arc::clone(&s);
+            thread::spawn(move || {
+                println!("{} : {:#?}", i, s);
+            })
+            .join();
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -217,5 +317,10 @@ mod tests {
     #[test]
     fn ch03_03() {
         assert_eq!(_ch03_03_drop(), ());
+    }
+
+    #[test]
+    fn ch03_04() {
+        assert_eq!(_ch03_04_rc_arc(), ());
     }
 }
