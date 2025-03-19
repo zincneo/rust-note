@@ -63,6 +63,79 @@ fn _ch01_01_closure() {
     }
 }
 
+/**
+## 闭包类型推导
+- 由于闭包不对外提供API，因此闭包可以享受类型推导
+- 为了增加代码可读性，也可以手动标准类型
+- 当编译器推导出一种类型之后，这个闭包将一直使用该类型，并非泛型
+*/
+fn _ch01_02_type_derivation() {
+    fn add_one_v1(x: u32) -> u32 {
+        x + 1
+    }
+    let add_one_v2 = |x: u32| -> u32 { x + 1 };
+    let add_one_v3 = |x| x + 1;
+    println!("{}", add_one_v1(1));
+    println!("{}", add_one_v2(1));
+    println!("{}", add_one_v3(1));
+}
+
+/**
+## 结构体中的闭包
+- 结构体的成员属性类型可以是闭包
+- 闭包类型使用特征约束来进行表示
+- 每一个闭包都有自己的类型即使是定义完全相同类型也不一样
+- 成员变量类型表示需要通过泛型参数和where约束
+*/
+fn _ch01_03_closure_in_struct() {
+    struct Cacher<T>
+    where
+        T: Fn(u32) -> u32,
+    {
+        query: T,
+        value: Option<u32>,
+    }
+    impl<T> Cacher<T>
+    where
+        T: Fn(u32) -> u32,
+    {
+        fn new(query: T) -> Self {
+            Cacher { query, value: None }
+        }
+        fn value(&mut self, arg: u32) -> u32 {
+            match self.value {
+                Some(v) => v,
+                None => {
+                    let v = (self.query)(arg);
+                    self.value = Some(v);
+                    v
+                }
+            }
+        }
+    }
+    let mut cacher = Cacher::new(|x| x + 1);
+    let value = cacher.value(10);
+    println!("{}", value);
+}
+
+/**
+## 闭包捕获值
+- 闭包可以捕获所在作用中的值
+- 闭包捕获值的时候需要分配内存去存储这些值
+*/
+fn _ch01_04_capture() {
+    let x = 4;
+    /*
+     * 函数无法捕获环境中的值
+     * fn equal_to_x(z: i32) -> bool {
+     *    z == x
+     * }
+     */
+    let equal_to_x = |z| x == z;
+    let y = 4;
+    assert!(equal_to_x(y));
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -70,5 +143,20 @@ mod tests {
     #[test]
     fn ch01_01() {
         assert_eq!(_ch01_01_closure(), ());
+    }
+
+    #[test]
+    fn ch01_02() {
+        assert_eq!(_ch01_02_type_derivation(), ());
+    }
+
+    #[test]
+    fn ch01_03() {
+        assert_eq!(_ch01_03_closure_in_struct(), ());
+    }
+
+    #[test]
+    fn ch01_04() {
+        assert_eq!(_ch01_04_capture(), ());
     }
 }
