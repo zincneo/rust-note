@@ -136,6 +136,88 @@ fn _ch01_04_capture() {
     assert!(equal_to_x(y));
 }
 
+/**
+## 三种闭包特征
+- 闭包捕获变量的三种方式对应函数传入参数的三种形式
+- 所有权转移 FnOnce
+  - 拿走环境中值的所有权，因此只能运行一次
+  - 如果在函数体内没有获取外部变量的所有权也只能运行一次，但是可以在条件约束的时候加上Copy特征让其可以多次调用(每次调用的都是新拷贝的版本)
+  - 强制转移所有权可以在闭包参数列表前面加上move关键字，这种方式用于闭包生命周期大于捕获变量生命周期的情况，比如将闭包返回或移入其他线程
+- 可变借用 FnMut
+  - 声明可变闭包的时候变量需要加上mut关键字
+- 不可变借用 Fn
+- 这三个特征强调的是在闭包内部如何使用捕获的值，而不是关心闭包如何捕获
+*/
+fn _ch01_05_trait() {
+    // 1. FnOnce
+    // FnOnce不代表一定转移所有权，而是表示该闭包只能调用一次
+    {
+        fn fn_once_v1<F>(func: F)
+        where
+            F: FnOnce(usize) -> bool,
+        {
+            println!("{}", func(3));
+            // 报错 println!("{}", func(4));
+        }
+
+        fn fn_once_v2<F>(func: F)
+        where
+            // 闭包要自动实现Copy特征的条件是被捕获的值都实现了Copy特征
+            F: FnOnce(usize) -> bool + Copy,
+        {
+            println!("{}", func(3));
+            // 再次调用的时候调用的是第一个的Copy版本
+            println!("{}", func(4));
+        }
+        let x = vec![1, 2, 3];
+        fn_once_v1(|z| z == x.len());
+        fn_once_v2(|z| z == x.len());
+    }
+    // 2. FnMut
+    {
+        let mut s = String::new();
+
+        // 报错，需要变量本身也是可变的 let update_string = |str| s.push_str(str);
+        let mut update_string = |str| s.push_str(str);
+        // 不加mut关键字编译器也可以推导出来是FnMut特征约束的类型，但是会导致不允许内部修改捕获的值，因此必须要加上mut关键字
+        update_string("hello");
+
+        println!("{:?}", s);
+    }
+    // 3. Fn
+    {
+        let s = "hello, ".to_string();
+
+        let update_string = |str| println!("{},{}", s, str);
+        update_string("world".to_string())
+    }
+}
+
+/**
+## 三种特征之间的关系
+- move表示强制移动所有权进入闭包
+- 闭包实现哪种特征和捕获的时候是不是发生所有权转移没有关系，而是取决于闭包内部如何使用这些被捕获的变量
+- 闭包实现Fn的规则
+    - 一个闭包一定实现FnOnce，因为至少可以被调用一次
+    - 对没有移出捕获变量所有权的闭包自动实现FnMut特征
+    - 不需要对捕获变量进行修改的变量自动实现Fn特征
+*/
+fn _ch01_06_fn() {
+    {
+        fn exec<F: FnMut()>(mut f: F) {
+            f()
+        }
+        let s = String::new();
+
+        // 这里的move强调的是将s移动进入闭包
+        // 但是对于闭包实现特征来说，闭包内部没有修改s的值，因此也会自动实现Fn，没有移出捕获值的所有权因此也会自动实现FnMut
+        // 因此对于这个闭包来说实现的特征是Fn + FnMut + FnOnce
+        let update_string = move || println!("{}", s);
+
+        exec(update_string); // 这里不可以继续使用s
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -158,5 +240,15 @@ mod tests {
     #[test]
     fn ch01_04() {
         assert_eq!(_ch01_04_capture(), ());
+    }
+
+    #[test]
+    fn ch01_05() {
+        assert_eq!(_ch01_05_trait(), ());
+    }
+
+    #[test]
+    fn ch01_06() {
+        assert_eq!(_ch01_06_fn(), ());
     }
 }
