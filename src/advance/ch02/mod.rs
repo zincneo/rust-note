@@ -88,6 +88,69 @@ fn _ch02_03_into_iterator() {
     println!("{:?}", values);
 }
 
+/**
+## 适配器
+- 消费者适配器:迭代器上的方法
+  - 调用会消费掉迭代器中的元素
+  - 返回其类型的值
+  - 方法内部都依赖next
+- 迭代器适配器:迭代器上的方法
+  - 也是惰性的，返回一个新的迭代器
+  - 是链式调用的关键
+- 在迭代器链式调用最后必须使用一个消费者适配器来收尾，否则什么也不会发生
+*/
+fn _ch02_04_adapter() {
+    let v1 = vec![1, 2, 3];
+    // 链式调用，最后要用消费者迭代器收尾
+    v1.iter()
+        .map(|x| x + 1)
+        .filter(|x| *x > 2)
+        .for_each(|x| println!("value: {}", x));
+}
+
+/**
+## 实现Iterator特征
+- 为自定义类型实现Iterator特征
+- 关键在于实现next方法
+- Iterator特征中还有很多消费者适配器，迭代器适配器方法但是都有默认实现
+*/
+fn _ch02_05_impl_iter() {
+    struct Counter {
+        count: u32,
+    }
+    impl Counter {
+        fn new() -> Counter {
+            Counter { count: 0 }
+        }
+    }
+    impl Iterator for Counter {
+        type Item = u32;
+        fn next(&mut self) -> Option<Self::Item> {
+            if self.count < 5 {
+                self.count += 1;
+                Some(self.count)
+            } else {
+                None
+            }
+        }
+    }
+    let mut counter = Counter::new();
+
+    assert_eq!(counter.next(), Some(1));
+    assert_eq!(counter.next(), Some(2));
+    assert_eq!(counter.next(), Some(3));
+    assert_eq!(counter.next(), Some(4));
+    assert_eq!(counter.next(), Some(5));
+    assert_eq!(counter.next(), None);
+
+    let sum: u32 = Counter::new()
+        .zip(Counter::new().skip(1))
+        .map(|(a, b)| a * b)
+        .filter(|x| x % 3 == 0)
+        .sum();
+    assert_eq!(18, sum);
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -105,5 +168,15 @@ mod tests {
     #[test]
     fn ch02_03() {
         assert_eq!(_ch02_03_into_iterator(), ());
+    }
+
+    #[test]
+    fn ch02_04() {
+        assert_eq!(_ch02_04_adapter(), ());
+    }
+
+    #[test]
+    fn ch02_05() {
+        assert_eq!(_ch02_05_impl_iter(), ());
     }
 }
