@@ -149,6 +149,57 @@ fn _ch03_02_deref() {
     // &(&&&v.deref()) -> &(&&v.deref()) -> &(&v.deref()) -> &(v.deref())
 }
 
+/**
+## Drop特征
+- 如果一个类型实现了Drop特征，则其变量会在离开其作用域的时候自动调用drop方法进行收尾
+- 离开一块作用域的时候调用drop的顺序如下
+  - 变量级别，按照逆序的方式，后定义的被先调用drop
+  - 结构体内的字段，按照字段定义的顺序drop
+- 不可以直接调用drop方法，但是Rust提供了std::mem::drop函数来手动提前丢弃一个变量(发生move并且调用变量的drop方法)
+- 由于rust当中根本没有new关键字，因此绝大部分时候不需要手动回收，使用场景是需要手动回收资源的比如文件描述符，网络socket这些需要自己实现Drop
+- Drop特征和Copy特征互斥
+*/
+#[allow(dead_code)]
+#[allow(unused)]
+fn _ch03_03_drop() {
+    struct HasDrop1;
+    struct HasDrop2;
+    impl Drop for HasDrop1 {
+        fn drop(&mut self) {
+            println!("Dropping HasDrop1!");
+        }
+    }
+    impl Drop for HasDrop2 {
+        fn drop(&mut self) {
+            println!("Dropping HasDrop2!");
+        }
+    }
+    struct HasTwoDrops {
+        one: HasDrop1,
+        two: HasDrop2,
+    }
+    impl Drop for HasTwoDrops {
+        fn drop(&mut self) {
+            println!("Dropping HasTwoDrops!");
+        }
+    }
+
+    struct Foo;
+
+    impl Drop for Foo {
+        fn drop(&mut self) {
+            println!("Dropping Foo!")
+        }
+    }
+    let _x = HasTwoDrops {
+        two: HasDrop2,
+        one: HasDrop1,
+    };
+    let _foo = Foo;
+    std::mem::drop(_x);
+    println!("Running!");
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -161,5 +212,10 @@ mod tests {
     #[test]
     fn ch03_02() {
         assert_eq!(_ch03_02_deref(), ());
+    }
+
+    #[test]
+    fn ch03_03() {
+        assert_eq!(_ch03_03_drop(), ());
     }
 }
