@@ -111,6 +111,122 @@ fn _ch05_03_local_variable() {
     }
 }
 
+/**
+## 消息通道
+- 标准库std::sync::mpsc提供了多发送者单接收者的消息通道
+- 该类型的关联方法new会返回一个元组(发送者,接收者)
+  - 发送者可以使用send方法发送数据
+  - 接收者可以使用recv方法阻塞当前线程，直到收到数据继续执行
+  - send和recv方法都会得到一个Result类型
+- 接收者可以使用try_recv方法
+  - 该方法不会阻塞线程，没有获取到消息的时候会返回一个错误
+- 传输数据的规则
+  - 发送的数据实现了Copy特征，会发送一份复制
+  - 发送的数据没有实现Copy特征，会发生所有权转移
+- for循环语法糖可以将接收者转换为一个迭代器，接收消息直到发送者都被drop
+- 发送者可以clone多份，实现在不同线程中发送
+- 通道满足先进先出的原则，发送的顺序和接收的顺序一致
+- mpsc提供异步通道和同步通道
+  - channel使用的是异步通道，无论接收者是否正在接收消息，消息发送者在发送消息时都不会阻塞
+  - sync_channel使用的是同步通道，发送消息是阻塞的，只有在消息被接收后才解除阻塞
+    - sync_channel接收一个参数，表示消息缓存的数量，当缓存队列满时才会阻塞当前线程
+- 当所有发送者被drop或者所有接收者drop后，通道自动关闭
+*/
+fn _ch05_04_mpsc() {
+    use std::sync::mpsc;
+    use std::thread;
+    use std::time::Duration;
+
+    // 1. 单接收者，单发送者
+    {
+        let (tx, rx) = mpsc::channel();
+
+        thread::spawn(move || {
+            // 发送一个数字1，编译器自动推导发送者和接收者的泛型参数列表接收一个i32的参数
+            tx.send(1).unwrap();
+        });
+
+        // 主线程中使用recv方法阻塞并等待接收
+        println!("receive {}", rx.recv().unwrap());
+    }
+
+    // 2. try_recv不阻塞
+    {
+        let (tx, rx) = mpsc::channel();
+
+        let t = thread::spawn(move || {
+            tx.send(1).unwrap();
+        });
+
+        println!("receive {:?}", rx.try_recv());
+        println!("receive {:?}", rx.try_recv());
+        println!("receive {:?}", rx.try_recv());
+        t.join().unwrap();
+        println!("receive {:?}", rx.try_recv());
+        println!("receive {:?}", rx.try_recv());
+    }
+
+    // 3. for语法糖接收
+    {
+        let (tx, rx) = mpsc::channel();
+
+        thread::spawn(move || {
+            let vals = vec![
+                String::from("hi"),
+                String::from("from"),
+                String::from("the"),
+                String::from("thread"),
+            ];
+
+            for val in vals {
+                tx.send(val).unwrap();
+                thread::sleep(Duration::from_secs(1));
+            }
+        });
+
+        for received in rx {
+            println!("Got: {}", received);
+        }
+    }
+
+    // 4. 多发送者
+    {
+        let (tx, rx) = mpsc::channel();
+        let tx1 = tx.clone();
+        thread::spawn(move || {
+            tx.send(String::from("hi from raw tx")).unwrap();
+        });
+
+        thread::spawn(move || {
+            tx1.send(String::from("hi from cloned tx")).unwrap();
+        });
+
+        for received in rx {
+            println!("Got: {}", received);
+        }
+    }
+
+    // 5. 同步通道
+    // 发送消息会阻塞当前线程，直到消息被接收者接收
+    {
+        let (tx, rx) = mpsc::sync_channel(0);
+        let handle = thread::spawn(move || {
+            println!("发送之前");
+            tx.send(1).unwrap();
+            // 发送之后阻塞当前线程
+            // 接收者接收send的消息之后线程继续执行
+            println!("发送之后");
+        });
+
+        println!("睡眠之前");
+        thread::sleep(Duration::from_secs(3));
+        println!("睡眠之后");
+
+        println!("receive {}", rx.recv().unwrap());
+        handle.join().unwrap();
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -128,5 +244,10 @@ mod tests {
     #[test]
     fn ch05_03() {
         assert_eq!(_ch05_03_local_variable(), ());
+    }
+
+    #[test]
+    fn ch05_04() {
+        assert_eq!(_ch05_04_mpsc(), ());
     }
 }
