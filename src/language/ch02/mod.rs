@@ -15,6 +15,12 @@
 
 ## [04 函数](./fn.f04_function.html)
 
+## 05 流程控制
+1. [if else](./fn.f05_01_if_else.html)
+2. [for](./fn.f05_02_for.html)
+3. [while和loop](./fn.f05_03_while_loop.html)
+4. [continue和break](./fn.f05_04_continue_break.html)
+5. [label标识符](./fn.f05_05_label.html)
 */
 
 /**
@@ -341,4 +347,7 @@ mod tests {
     fn ch02_04() {
         assert_eq!(f04_function(), ());
     }
+
+    #[test]
+    fn ch02_05() {}
 }
