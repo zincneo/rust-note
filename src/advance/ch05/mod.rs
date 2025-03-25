@@ -1,3 +1,5 @@
+use std::sync::Mutex;
+
 /**
 ## 使用多线程
 - std::thread::spawn
@@ -227,6 +229,69 @@ fn _ch05_04_mpsc() {
     }
 }
 
+/**
+## 线程同步
+- 线程同步性是指在多线程环境中，确保多个线程按照预期的顺序执行，避免因竞争资源而导致的数据不一致或程序错误
+- 线程同步的中的概念
+  1. 竞争条件:多个线程同时访问共享资源且操作顺序影响运行结果，可能产生资源竞争导致数据不一致
+  2. 临界区:指访问共享资源的代码片段，必须保证同一时刻只有一个线程执行该代码
+  3. 死锁:多个线程互相等待对方释放资源，导致线程无法继续执行，常见原因通常为:资源竞争、请求和释放资源的顺序不当
+  4. 线程安全:多线程环境下，代码正确处理共享资源，避免数据竞争和不一致
+- 常见的同步机制:
+  1. 消息通道
+  2. 锁
+    1. 互斥锁(Mutex)
+    2. 读写锁(RwLock)
+    3. 条件变量(Condvar)
+    4. 信号量(Semaphore)
+  3. 原子操作
+- 锁的是利用共享内存实现的，共享内存可以说是同步的灵魂，因为消息传递的底层实际上也是通过共享内存来实现
+  1. 共享内存相对消息传递能节省多次内存拷贝的成本
+  2. 共享内存的实现简洁的多
+  3. 共享内存的锁竞争更多
+
+### 互斥锁
+- Mutex
+  - 该类型用来包裹一个资源，保证这个资源被占用的时候其他线程不允许访问
+- 由于所有权机制，因此Mutex在包裹资源的时候需要和线程安全的引用计数Arc一起使用
+- Mutex可以修改内部数据(也就是多线程下的RefCell)，因此结合
+- 正确使用互斥锁的原则
+  1. 使用数据之前必须获取锁
+  2. 数据使用完成后，必须及时释放锁
+*/
+fn _ch05_05_lock() {
+    use std::sync::Arc;
+    use std::sync::Mutex;
+    // 1. 单线程下使用
+    {
+        let m = Mutex::new(1);
+        {
+            let mut num = m.lock().unwrap();
+            *num = 10;
+        } // 锁被自动drop
+        println!("m = {:?}", m);
+    }
+    // 2. 多线程下使用
+    {
+        let counter = Arc::new(Mutex::new(0));
+        let mut handles = vec![];
+        for _ in 0..10 {
+            let counter = counter.clone();
+            let handle = std::thread::spawn(move || {
+                let mut num = counter.lock().unwrap();
+                *num += 1;
+            });
+            handles.push(handle);
+        }
+
+        for handle in handles {
+            handle.join().unwrap();
+        }
+
+        println!("Result: {}", *counter.lock().unwrap());
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -249,5 +314,10 @@ mod tests {
     #[test]
     fn ch05_04() {
         assert_eq!(_ch05_04_mpsc(), ());
+    }
+
+    #[test]
+    fn ch05_05() {
+        assert_eq!(_ch05_05_lock(), ());
     }
 }
