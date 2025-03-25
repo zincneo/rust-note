@@ -3,3 +3,6 @@ basic CHAPTER_ID FUNCTION_ID:
 
 advance CHAPTER_ID FUNCTION_ID:
     @cargo test advance::ch{{CHAPTER_ID}}::tests::ch{{CHAPTER_ID}}_{{FUNCTION_ID}} -- --nocapture
+
+serve:
+    @cargo doc && miniserve target/doc
