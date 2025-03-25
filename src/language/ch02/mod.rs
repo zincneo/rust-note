@@ -12,6 +12,9 @@
 2. [组合类型](./fn.f02_02_compound_type.html)
 
 ## [03 语句和表达式](./fn.f03_statement_expression.html)
+
+## [04 函数](./fn.f04_function.html)
+
 */
 
 /**
@@ -275,6 +278,43 @@ pub fn f03_statement_expression() {
     }
 }
 
+/**
+# 函数
+
+## 函数要点
+1. Rust使用fn关键字来定义函数
+2. 函数名命名规则与变量相同
+3. 函数位置可以随意放置，Rust不在乎在哪里定义，有定义即可
+4. 函数定义形式`fn add(a: i32, b: i32) -> i32 {}`
+
+## 参数列表
+- Rust是强类型语言，必须为每一个参数标明类型
+
+## 函数返回值
+- 在参数列表后使用-> return_type注明返回值类型
+- 当不标准返回值类型的时候等价与-> () 返回空元组
+- 在{}函数体中可以使用return关键字来返回值也可以将最后一个表达式作为返回值，如果最后是一个语句且不是return语句则返回空元组
+
+## 发散函数
+- 返回值类型为!表示这个函数是一个发散函数
+- 发散函数的含义是无法回到调用点继续执行代码
+- 通常用于会导致死循环或者程序崩溃的函数
+*/
+pub fn f04_function() {
+    #[allow(unused)]
+    {
+        fn dead_end() -> ! {
+            panic!("你已经到了穷途末路，崩溃吧！");
+        }
+
+        fn forever() -> ! {
+            loop {
+                //...
+            }
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -295,5 +335,10 @@ mod tests {
     #[test]
     fn ch02_03() {
         assert_eq!(f03_statement_expression(), ());
+    }
+
+    #[test]
+    fn ch02_04() {
+        assert_eq!(f04_function(), ());
     }
 }
