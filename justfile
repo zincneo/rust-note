@@ -1,8 +1,8 @@
-basic CHAPTER_ID FUNCTION_ID:
-    @cargo test basic::ch{{CHAPTER_ID}}::tests::ch{{CHAPTER_ID}}_{{FUNCTION_ID}} -- --nocapture
-
-advance CHAPTER_ID FUNCTION_ID:
-    @cargo test advance::ch{{CHAPTER_ID}}::tests::ch{{CHAPTER_ID}}_{{FUNCTION_ID}} -- --nocapture
+la CHAPTER_ID FUNCTION_ID:
+    @cargo test language::ch{{CHAPTER_ID}}::tests::ch{{CHAPTER_ID}}_{{FUNCTION_ID}} -- --nocapture
 
 serve:
-    @cargo doc && miniserve target/doc
+    rm -rf target/doc
+    @cargo doc
+    cp -r images/ target/doc
+    miniserve target/doc

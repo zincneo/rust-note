@@ -164,6 +164,7 @@ pub fn f02_01_ref() {
 - 注意当前编译器版本下，引用作用域的结束位置从花括号变成最后一次使用的位置
 ```rust
     let mut num = 100;
+    let ref _r_num = 100; // 不会导致同时存在不可变引用和可变引用的错误，因为编译器会检查最后一次使用的位置
     let ref mut r_num = num;
     *r_num += 10;
     println!("{r_num}");
@@ -171,6 +172,7 @@ pub fn f02_01_ref() {
 */
 pub fn f02_02_mut_ref() {
     let mut num = 100;
+    let ref _r_num = 100; // 不会导致同时存在不可变引用和可变引用的错误，因为编译器会检查最后一次使用的位置
     let ref mut r_num = num;
     *r_num += 10;
     println!("{r_num}");
