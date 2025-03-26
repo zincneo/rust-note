@@ -239,9 +239,9 @@ pub fn f02_01_scalar_type() {
 ```
 
 ## 数组
-- Rust提供的数组使用[element_type;length]来表示
+- Rust提供的数组使用`[element_type;length]`来表示
 - 长度是一个usize类型的值
-- 初始化的使用可以使用[element_value;length]将整个数组所有元素初始化为相同的值
+- 初始化的使用可以使用`[element_value;length]`将整个数组所有元素初始化为相同的值
 
 ```rust
 [100;10]; // 一个类型为[i32;10]的数组，所有元素值都是100

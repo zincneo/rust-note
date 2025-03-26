@@ -27,13 +27,13 @@ fn main() {
 1. cargo命令是rust语言官方提供的项目管理工具
 2. 项目依赖于文件夹下的Cargo.toml来配置项目和管理第三方依赖，Cargo.lock来锁定包的版本
 3. 创建项目
-  - 二进制项目`cargo new project_name`
-  - 库项目`cargo new --lib project_name`
+    - 二进制项目`cargo new project_name`
+    - 库项目`cargo new --lib project_name`
 5. 运行项目
-  - debug模式`cargo run`
-  - release模式`cargo run --release`
+    - debug模式`cargo run`
+    - release模式`cargo run --release`
 5. 运行测试用例
-  - 项目所有测试用例`cargo test`
-  - 指定模块下的测试用例`cargo test mod_name::test_fn`
-  - 文档测试`cargo test --doc`
+    - 项目所有测试用例`cargo test`
+    - 指定模块下的测试用例`cargo test mod_name::test_fn`
+    - 文档测试`cargo test --doc`
 */
