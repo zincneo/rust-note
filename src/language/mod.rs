@@ -6,6 +6,7 @@
 - [ch03 Rust所有权](./ch03/index.html)
 - [ch04 Rust结构体和枚举](./ch04/index.html)
 - [ch05 Rust方法](./ch05/index.html)
+- [ch06 Rust模式匹配](./ch06/index.html)
 */
 
 pub mod ch01;
@@ -13,3 +14,4 @@ pub mod ch02;
 pub mod ch03;
 pub mod ch04;
 pub mod ch05;
+pub mod ch06;
