@@ -1,13 +1,13 @@
 /*!
 # ch05 Rust方法
 
-## [01 方法定义](./fn.f01_method.html)
+## [01 方法语法](./fn.f01_method.html)
 
 ## [02 关联函数](./fn.f02_associative_function.html)
 */
 
 /**
-# 方法
+# 方法语法
 - Rust中可以为结构体和枚举实现方法
 - 使用关键字impl来定义实现方法的代码块`impl StructName/EnumName {}`
 - Self关键字在impl块中表示结构体和枚举类型本身
@@ -85,6 +85,36 @@ pub fn f01_method() {
     );
 }
 
+/**
+# 关联函数
+- 在impl块中的第一个参数不是self,&self,&mut self称为关联函数
+- 关联函数不能通过实例.函数名进行调用，需要使用类型名::函数名进行调用
+```rust
+impl Rectangle {
+    // new是一个关联函数
+    fn new(w: u32, h: u32) -> Self {
+        Rectangle { width: w, height: h }
+    }
+}
+```
+*/
+#[allow(dead_code)]
+pub fn f02_associative_function() {
+    #[derive(Debug)]
+    struct Rectangle {
+        width: u32,
+        height: u32,
+    }
+    impl Rectangle {
+        fn new(w: u32, h: u32) -> Self {
+            Rectangle {
+                width: w,
+                height: h,
+            }
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -92,5 +122,10 @@ mod tests {
     #[test]
     fn ch05_01() {
         assert_eq!(f01_method(), ());
+    }
+
+    #[test]
+    fn ch05_02() {
+        assert_eq!(f02_associative_function(), ());
     }
 }
