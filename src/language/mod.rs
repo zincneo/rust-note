@@ -7,6 +7,7 @@
 - [ch04 Rust结构体和枚举](./ch04/index.html)
 - [ch05 Rust方法](./ch05/index.html)
 - [ch06 Rust模式匹配](./ch06/index.html)
+- [ch07 Rust泛型和特征](./ch07/index.html)
 */
 
 pub mod ch01;
@@ -15,3 +16,4 @@ pub mod ch03;
 pub mod ch04;
 pub mod ch05;
 pub mod ch06;
+pub mod ch07;
