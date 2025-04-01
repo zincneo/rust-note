@@ -92,7 +92,9 @@ fn print_coordinates(&(x, y, .., z): &(i32, i32, i32, i32, i32, i32)) {
     - let, match
 
 ```rust
-// let Some(x) = some_potion_value; // 编译器报错，因为let是不可驳的
+// let Some(x) = some_option_value; 编译器报错，因为let是不可驳的
+// 改为可驳的
+if let Some(x) = some_option_value;
 ```
 
 2. 可驳模式允许匹配一种模式，忽略剩余的可能性
