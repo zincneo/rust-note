@@ -10,10 +10,10 @@
 - [ch07 Rust泛型和特征](./ch07/index.html)
 */
 
-pub mod ch01_language_description;
-pub mod ch02_basic_concept;
-pub mod ch03_ownership;
-pub mod ch04_struct_enum;
-pub mod ch05_method;
+pub mod ch01;
+pub mod ch02;
+pub mod ch03;
+pub mod ch04;
+pub mod ch05;
 pub mod ch06;
 pub mod ch07;
