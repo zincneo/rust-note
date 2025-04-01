@@ -16,6 +16,7 @@
 3. [排序](./fn.f01_03_sort.html)
 4. [存储不同类型数据](./fn.f01_04_multiple_type.html)
 
+## [02 哈希表HashMap](./fn.f02_hashmap.html)
 */
 
 /**
@@ -161,13 +162,116 @@ let v: Vec<Box<dyn IpAddr>> = vec![
 */
 pub fn f01_04_multiple_type() {}
 
+/**
+# 哈希表HashMap
+
+- 使用new方法创建
+
+```rust
+use std::collections::HashMap;
+
+// 创建一个HashMap，用于存储宝石种类和对应的数量
+let mut my_gems = HashMap::new();
+
+// 将宝石类型和对应的数量写入表中
+my_gems.insert("红宝石", 1);
+my_gems.insert("蓝宝石", 2);
+my_gems.insert("河边捡的误以为是宝石的破石头", 18);
+```
+
+- 使用迭代器和collect方法创建
+
+```rust
+use std::collections::HashMap;
+// 通过循环添加
+let teams_list = vec![
+    ("teamA".to_string(), 100),
+    ("teamB".to_string(), 10),
+    ("teamC".to_string(), 50),
+];
+
+let mut teams_map = HashMap::new();
+for team in &teams_list {
+    teams_map.insert(&team.0, team.1);
+}
+println!("{:?}",teams_map);
+
+// 迭代器上有collect方法可以直接将值收集为可转换的集合类型
+let teams_list = vec![
+    ("teamA".to_string(), 100),
+    ("teamB".to_string(), 10),
+    ("teamC".to_string(), 50),
+];
+let teams_map: HashMap<_,_> = teams_list.into_iter().collect();
+println!("{:?}",teams_map)
+```
+
+- 查询HashMap
+    - 使用get方法，返回值是Option包裹的原始类型的引用
+
+```rust
+use std::collections::HashMap;
+
+let mut scores = HashMap::new();
+
+scores.insert(String::from("Blue"), 10);
+scores.insert(String::from("Yellow"), 50);
+
+let team_name = String::from("Blue");
+let score: Option<&i32> = scores.get(&team_name);
+
+```
+
+- 更新HashMap
+
+```rust
+use std::collections::HashMap;
+let mut scores = HashMap::new();
+// 1. insert方法，插入一个值，返回Option包裹的原值
+scores.insert("Blue", 10);
+// 覆盖已有的值
+let old = scores.insert("Blue", 20);
+assert_eq!(old, Some(10));
+
+// 查询新插入的值
+let new = scores.get("Blue");
+assert_eq!(new, Some(&20));
+
+// 2. entry方法，查询对应的值，需要结合or_inser方法链式调用
+// 查询Yellow对应的值，若不存在则插入新值
+let v = scores.entry("Yellow").or_insert(5);
+assert_eq!(*v, 5); // 不存在，插入5
+// 查询Yellow对应的值，若不存在则插入新值
+let v = scores.entry("Yellow").or_insert(50);
+assert_eq!(*v, 5); // 已经存在，因此50没有插入
+```
+*/
+pub fn f02_hashmap() {
+    use std::collections::HashMap;
+    let teams_list = vec![
+        ("teamA".to_string(), 100),
+        ("teamB".to_string(), 10),
+        ("teamC".to_string(), 50),
+    ];
+    let mut teams_map = teams_list.into_iter().collect::<HashMap<_, _>>();
+    println!("{:?}", teams_map);
+    let _t = teams_map.entry("teamA".to_string()).or_insert(10);
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
     #[test]
     fn ch08_01() {
         assert_eq!(f01_01_vec(), ());
         assert_eq!(f01_02_method(), ());
         assert_eq!(f01_03_sort(), ());
+        assert_eq!(f01_04_multiple_type(), ());
+    }
+
+    #[test]
+    fn ch08_02() {
+        assert_eq!(f02_hashmap(), ());
     }
 }
