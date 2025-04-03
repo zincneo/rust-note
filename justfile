@@ -4,6 +4,10 @@ la CHAPTER_ID FUNCTION_ID:
 le QUESTION_ID:
     @cargo test leetcode::tests::q{{QUESTION_ID}}_testcases -- --nocapture
 
+
+li CHAPTER_ID FUNCTION_ID:
+    @cargo test lists::tests::ch{{CHAPTER_ID}}_{{FUNCTION_ID}} -- --nocapture
+
 serve:
     rm -rf target/doc
     @cargo doc
