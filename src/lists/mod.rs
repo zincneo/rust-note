@@ -30,4 +30,14 @@ mod tests {
         assert_eq!(ch01::f01_02_use_box(), ());
         assert_eq!(ch01::f01_03_list_link_node(), ());
     }
+
+    #[test]
+    fn ch01_02() {
+        assert_eq!(ch01::f02_basic_method(), ());
+    }
+
+    #[test]
+    fn ch01_03() {
+        assert_eq!(ch01::f03_impl(), ());
+    }
 }
