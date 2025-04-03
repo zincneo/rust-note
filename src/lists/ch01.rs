@@ -7,7 +7,7 @@
 - [02 使用Box智能指针](./fn.f01_02_use_box.html)
 - [03 优化结构消除junk](./fn.f01_03_list_link_node.html)
 
-## 02 基本操作
+## [02 基本操作](./fn.f02_basic_method.html)
 
 ## 03 最终实现
 */
@@ -117,3 +117,92 @@ struct Node {
 ```
 */
 pub fn f01_03_list_link_node() {}
+
+/**
+# 链表的基本操作
+
+- new
+```rust
+impl List {
+    fn new() -> Self {
+        Self { head: Link::Empty }
+    }
+}
+```
+- push
+    - 这里实现头插法
+    - 注意所有权规则
+    - 标准库提供的函数std::mem::replace允许将一个可变引用的值偷出来，放进去另外一个值
+```rust
+impl List {
+    fn push(&mut self, elem: i32) {
+        let new_node = Node {
+            elem,
+            // 1. next: self.head // 发生所有权转移导致编译器报错
+            // 2. next: self.head.clone() // 产生一个深拷贝，内存消耗大
+            next: std::mem::replace(&mut self.head, List::Empty) // 标准库函数，偷走原来的值放进去Empty
+        };
+        self.head = new_node;
+    }
+}
+```
+- pop
+    - 注意所有权规则
+```rust
+impl List {
+    fn pop(&mut self) -> Option<i32> {
+        // 1. match self.head // 发生所有权转移导致编译器报错
+        // 2. match &self.head // 引用形式，移除内容不适用
+        // 标准库函数偷出来原来的值使用
+        match std::mem::replace(&mut self.head, List::Empty) {
+            List::Empty => None,
+            List::More(node) => {
+                self.head = node.next;
+                Some(node.elem)
+            }
+        }
+    }
+}
+```
+*/
+#[allow(unused)]
+#[allow(dead_code)]
+pub fn f02_basic_method() {
+    pub struct List {
+        head: Link,
+    }
+
+    #[derive(Clone)]
+    enum Link {
+        Empty,
+        More(Box<Node>),
+    }
+
+    #[derive(Clone)]
+    struct Node {
+        elem: i32,
+        next: Link,
+    }
+
+    impl List {
+        pub fn new() -> Self {
+            List { head: Link::Empty }
+        }
+        pub fn push(&mut self, elem: i32) {
+            let new_node = Box::new(Node {
+                elem,
+                next: std::mem::replace(&mut self.head, Link::Empty),
+            });
+            self.head = Link::More(new_node);
+        }
+        pub fn pop(&mut self) -> Option<i32> {
+            match std::mem::replace(&mut self.head, Link::Empty) {
+                Link::Empty => None,
+                Link::More(node) => {
+                    self.head = node.next;
+                    Some(node.elem)
+                }
+            }
+        }
+    }
+}
