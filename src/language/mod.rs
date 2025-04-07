@@ -14,6 +14,7 @@
 - [ch11 Rust包和模块](./ch11/index.html)
 - [ch12 Rust注释和文档](./ch12/index.html)
 - [ch13 Rust格式化输出](./ch13/index.html)
+- [ch14 Rust函数式编程](./ch14/index.html)
 */
 
 pub mod ch01;
@@ -29,3 +30,4 @@ pub mod ch10;
 pub mod ch11;
 pub mod ch12;
 pub mod ch13;
+pub mod ch14;
