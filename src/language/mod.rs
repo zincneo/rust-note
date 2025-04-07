@@ -13,6 +13,7 @@
 - [ch10 Rust错误处理](./ch10/index.html)
 - [ch11 Rust包和模块](./ch11/index.html)
 - [ch12 Rust注释和文档](./ch12/index.html)
+- [ch13 Rust格式化输出](./ch13/index.html)
 */
 
 pub mod ch01;
@@ -27,3 +28,4 @@ pub mod ch09;
 pub mod ch10;
 pub mod ch11;
 pub mod ch12;
+pub mod ch13;
