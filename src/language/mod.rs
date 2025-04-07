@@ -11,6 +11,8 @@
 - [ch08 Rust集合类型](./ch08/index.html)
 - [ch09 Rust生命周期](./ch09/index.html)
 - [ch10 Rust错误处理](./ch10/index.html)
+- [ch11 Rust包和模块](./ch11/index.html)
+- [ch12 Rust注释和文档](./ch12/index.html)
 */
 
 pub mod ch01;
@@ -23,3 +25,5 @@ pub mod ch07;
 pub mod ch08;
 pub mod ch09;
 pub mod ch10;
+pub mod ch11;
+pub mod ch12;
