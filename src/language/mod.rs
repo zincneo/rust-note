@@ -9,6 +9,7 @@
 - [ch06 Rust模式匹配](./ch06/index.html)
 - [ch07 Rust泛型和特征](./ch07/index.html)
 - [ch08 Rust集合类型](./ch08/index.html)
+- [ch09 Rust生命周期](./ch09/index.html)
 */
 
 pub mod ch01;
@@ -19,3 +20,4 @@ pub mod ch05;
 pub mod ch06;
 pub mod ch07;
 pub mod ch08;
+pub mod ch09;
