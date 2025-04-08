@@ -169,3 +169,39 @@ fn factory(x:i32) -> Box<dyn Fn(i32) -> i32> {
 ```
 */
 pub fn f01_04_return() {}
+
+/**
+# 闭包中结构体
+- 结构体的字段使用闭包实现缓存的示例
+*/
+pub fn f01_06_struct() {
+    struct Cacher<T>
+    where
+        T: Fn(u32) -> u32,
+    {
+        query: T,
+        value: Option<u32>,
+    }
+    impl<T> Cacher<T>
+    where
+        T: Fn(u32) -> u32,
+    {
+        fn new(query: T) -> Self {
+            Self { query, value: None }
+        }
+        // 先查询缓存的值，不存在则使用`query`加载
+        fn value(&mut self, arg: u32) -> u32 {
+            match self.value {
+                Some(v) => v,
+                None => {
+                    let v = (self.query)(arg);
+                    self.value = Some(v);
+                    v
+                }
+            }
+        }
+    }
+    let mut cacher = Cacher::new(|arg| arg);
+    println!("{}", cacher.value(4));
+    println!("{}", cacher.value(20));
+}
