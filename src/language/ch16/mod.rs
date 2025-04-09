@@ -11,8 +11,13 @@
 
 ## [5. Cell和RefCell](./ch16_05_cell_refcell/index.html)
 
-## [6. Weak](./ch16_06_weak/index.html)
+## [6. Weak](./fn.f06_weak.html)
 */
+
+use std::{
+    cell::RefCell,
+    rc::{Rc, Weak},
+};
 
 /**
 # Box
@@ -169,6 +174,113 @@ pub mod ch16_04_rc_arc;
 
 pub mod ch16_05_cell_refcell;
 
+/**
+# Weak
+
+- Weak智能指针用来解决Rc导致的循环引用问题
+- 需要使用Rc::downgrade关联方法来获取
+- Rc和Weak的对比
+
+| **Rc** | **Weak** |
+|:---:|:---:|
+| 不计数 | 引用计数 |
+| 不拥有所有权 | 拥有值的所有权 |
+| 不阻止值drop | 所有引用计数归0才会drop |
+| 引用存在返回Some,不存在返回None | 引用必然存在 |
+| 通过 upgrade 取到 Option<Rc<T>>，然后再取值 | 通过Deref触发自动解引用，无需额外操作 |
+
+- 链表使用循环引用问题
+    ```rust
+    #[derive(Debug)]
+    enum List {
+        Cons(char, RefCell<Rc<List>>),
+        Nil,
+    }
+    use List::*;
+    impl List {
+        fn tail(&self) -> Option<&RefCell<Rc<List>>> {
+            match self {
+                Cons(_, item) => Some(item),
+                Nil => None,
+            }
+        }
+    }
+    let a = Rc::new(Cons('A', RefCell::new(Rc::new(Nil))));
+    let b = Rc::new(Cons('B', RefCell::new(Rc::clone(&a))));
+    // 制造A -> B, B -> A
+    if let Some(item) = a.tail() {
+        *item.borrow_mut() = Rc::clone(&b);
+    }
+    // 导致爆栈
+    println!("a next item = {:?}", a.tail());
+    // 在主进程结束之前，a和b的引用计数都为2
+    // b先触发drop，这时候b引用计数-1，b的引用计数为1
+    // a后触发drop，这时候a引用计数-1，a的引用计数为1
+    // 这样导致a，b所指向的堆上内存都始终有1引用计数，无法被释放，造成了内存泄漏
+    ```
+    - 使用Weak解决循环引用问题
+    ```rust
+
+    #[derive(Debug)]
+    enum List {
+        Cons(char, RefCell<Weak<List>>),
+        Nil,
+    }
+
+    impl List {
+        fn tail(&self) -> Option<&RefCell<Weak<List>>> {
+            match self {
+                Cons(_, item) => Some(item),
+                Nil => None,
+            }
+        }
+    }
+
+    use List::*;
+    let nil = Rc::new(Nil);
+    let a = Rc::new(Cons('A', RefCell::new(Rc::downgrade(&nil))));
+    let b = Rc::new(Cons('B', RefCell::new(Rc::downgrade(&a))));
+    if let Some(item) = a.tail() {
+        *item.borrow_mut() = Rc::downgrade(&b);
+    }
+    println!("{:#?}", a);
+    // a, b释放的时候引用计数-1，引用计数为0，堆上数据正确释放
+    ```
+*/
+pub fn f06_weak() {
+    let five = Rc::new(5);
+    let weak_five = Rc::downgrade(&five);
+    let strong_five = weak_five.upgrade();
+    assert_eq!(*strong_five.unwrap(), 5);
+    std::mem::drop(five);
+    let strong_five = weak_five.upgrade();
+    assert_eq!(strong_five, None);
+
+    #[derive(Debug)]
+    enum List {
+        Cons(char, RefCell<Weak<List>>),
+        Nil,
+    }
+
+    impl List {
+        fn tail(&self) -> Option<&RefCell<Weak<List>>> {
+            match self {
+                Cons(_, item) => Some(item),
+                Nil => None,
+            }
+        }
+    }
+
+    use List::*;
+    let nil = Rc::new(Nil);
+    let a = Rc::new(Cons('A', RefCell::new(Rc::downgrade(&nil))));
+    let b = Rc::new(Cons('B', RefCell::new(Rc::downgrade(&a))));
+    if let Some(item) = a.tail() {
+        *item.borrow_mut() = Rc::downgrade(&b);
+    }
+    println!("{:#?}", a);
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -204,5 +316,7 @@ mod tests {
     }
 
     #[test]
-    fn ch16_06() {}
+    fn ch16_06() {
+        assert_eq!(f06_weak(), ());
+    }
 }
