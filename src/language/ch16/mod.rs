@@ -8,6 +8,10 @@
 ## [3. Drop](./fn.f03_drop.html)
 
 ## [4. Rc和Arc](./ch16_04_rc_arc/index.html)
+
+## [5. Cell和RefCell](./ch16_05_cell_refcell/index.html)
+
+## [6. Weak](./ch16_06_weak/index.html)
 */
 
 /**
@@ -163,6 +167,8 @@ pub fn f03_drop() {
 
 pub mod ch16_04_rc_arc;
 
+pub mod ch16_05_cell_refcell;
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -189,4 +195,14 @@ mod tests {
         assert_eq!(ch16_04_rc_arc::f04_01_rc(), ());
         assert_eq!(ch16_04_rc_arc::f04_02_case(), ());
     }
+
+    #[test]
+    fn ch16_05() {
+        assert_eq!(ch16_05_cell_refcell::f05_01_cell(), ());
+        assert_eq!(ch16_05_cell_refcell::f05_02_refcell(), ());
+        assert_eq!(ch16_05_cell_refcell::f05_03_rc_refcell(), ());
+    }
+
+    #[test]
+    fn ch16_06() {}
 }
