@@ -1,11 +1,13 @@
 /*!
 # Rust智能指针
 
-1. [Box](./fn.f01_box.html)
+## [1. Box](./fn.f01_box.html)
 
-2. [Deref](./ch16_02_deref/index.html)
+## [2. Deref](./ch16_02_deref/index.html)
 
-3. [Drop](./fn.f03_drop.html)
+## [3. Drop](./fn.f03_drop.html)
+
+## [4. Rc和Arc](./ch16_04_rc_arc/index.html)
 */
 
 /**
@@ -159,6 +161,8 @@ pub fn f03_drop() {
     }
 }
 
+pub mod ch16_04_rc_arc;
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -178,5 +182,11 @@ mod tests {
     #[test]
     fn ch16_03() {
         assert_eq!(f03_drop(), ());
+    }
+
+    #[test]
+    fn ch16_04() {
+        assert_eq!(ch16_04_rc_arc::f04_01_rc(), ());
+        assert_eq!(ch16_04_rc_arc::f04_02_case(), ());
     }
 }
