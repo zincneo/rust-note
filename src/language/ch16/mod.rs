@@ -1,7 +1,9 @@
 /*!
 # Rust智能指针
 
-## [Box](./fn.f01_box.html)
+1. [Box](./fn.f01_box.html)
+
+2. [Deref](./ch16_02_deref/index.html)
 */
 
 /**
@@ -51,6 +53,8 @@ pub fn f01_box() {
     let _arr_2 = arr_1;
 }
 
+pub mod ch16_02_deref;
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -58,5 +62,12 @@ mod tests {
     #[test]
     fn ch16_01() {
         assert_eq!(f01_box(), ());
+    }
+
+    #[test]
+    fn ch16_02() {
+        assert_eq!(ch16_02_deref::f02_01_star_mark(), ());
+        assert_eq!(ch16_02_deref::f02_02_auto_deref(), ());
+        assert_eq!(ch16_02_deref::f02_03_deref_impl(), ());
     }
 }
