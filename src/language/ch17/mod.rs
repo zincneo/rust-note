@@ -15,6 +15,7 @@
 
 ## [1. 使用多线程](./fn.f01_use_thread.html)
 ## [2. 线程间通信:消息通道](./ch17_02_mpsc/index.html)
+## [3. 线程间通信:互斥锁和读写锁](./ch17_03_mutex_rwlock.html)
 */
 
 /**
@@ -81,6 +82,7 @@ pub fn f01_use_thread() {
 }
 
 pub mod ch17_02_mpsc;
+pub mod ch17_03_mutex_rwlock;
 
 #[cfg(test)]
 mod tests {
@@ -94,5 +96,14 @@ mod tests {
     #[test]
     fn ch17_02() {
         assert_eq!(ch17_02_mpsc::f02_01_use(), ());
+        assert_eq!(ch17_02_mpsc::f02_02_try_revc(), ());
+        assert_eq!(ch17_02_mpsc::f02_03_sync(), ());
+    }
+
+    #[test]
+    fn ch17_03() {
+        assert_eq!(ch17_03_mutex_rwlock::f03_01_mutex(), ());
+        assert_eq!(ch17_03_mutex_rwlock::f03_02_rwlock(), ());
+        assert_eq!(ch17_03_mutex_rwlock::f03_03_dead_lock(), ());
     }
 }
