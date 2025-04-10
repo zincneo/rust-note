@@ -17,6 +17,8 @@
 ## [2. 线程间通信:消息通道](./ch17_02_mpsc/index.html)
 ## [3. 线程间通信:互斥锁和读写锁](./ch17_03_mutex_rwlock/index.html)
 ## [4. 线程间通信:条件变量控制执行顺序](./ch17_04_condvar/index.html)
+## [5. 线程间通信:原子操作](./ch17_05_atomic/index.html)
+## [6. 线程补充:线程屏障](./fn.f06_barrier.html)
 */
 
 /**
@@ -85,6 +87,7 @@ pub fn f01_use_thread() {
 pub mod ch17_02_mpsc;
 pub mod ch17_03_mutex_rwlock;
 pub mod ch17_04_condvar;
+pub mod ch17_05_atomic;
 
 #[cfg(test)]
 mod tests {
@@ -112,5 +115,10 @@ mod tests {
     #[test]
     fn ch17_04() {
         assert_eq!(ch17_04_condvar::f04_condvar(), ());
+    }
+
+    #[test]
+    fn ch17_05() {
+        assert_eq!(ch17_05_atomic::f05_global_var(), ());
     }
 }
