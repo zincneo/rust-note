@@ -14,6 +14,8 @@ Rust中错误主要分为两类:
 ## [可恢复的错误](./fn.f02_result.html)
 
 ## [错误传播](./fn.f03_question_mark.html)
+
+## [组合器](./fn.f04_combine.html)
 */
 
 /**
@@ -115,3 +117,93 @@ fn last_char_of_first_line(text: &str) -> Option<char> {
 - Rust的主函数还支持返回值为`Result<(), Box<dyn std::error::Error>>`类型
 */
 pub fn f03_question_mark() {}
+
+/**
+# 组合器
+
+由Option和Result类型提供的一系列方法，实现Option，Result值或类型的转换
+
+- or和and
+    - 参数是调用者同类型的值
+    - ok表达式按照顺序求值，若任何一个表达式的结果是 Some 或 Ok，则该值会立刻返回
+    - and若两个表达式的结果都是 Some 或 Ok，则第二个表达式中的值被返回。若任何一个的结果是 None 或 Err ，则立刻返回
+    ```rust
+    let s1 = Some("some1");
+    let s2 = Some("some2");
+    let o1: Result<&str, &str> = Ok("ok1");
+    let o2: Result<&str, &str> = Ok("ok2");
+    assert_eq!(s1.or(s2), s1); // Some1 or Some2 = Some1
+    assert_eq!(o1.or(o2), o1); // Ok1 or Ok2 = Ok1
+    ```
+- or_else和and_then
+    - 和or以及and的差别只在于参数是一个返回同类型值的闭包
+    ```rust
+    // or_else with Option
+    let s1 = Some("some1");
+    let fn_some = || Some("some2"); // 类似于: let fn_some = || -> Option<&str> { Some("some2") };
+    assert_eq!(s1.or_else(fn_some), s1); // Some1 or_else Some2 = Some1
+    // or_else with Result
+    let o1: Result<&str, &str> = Ok("ok1");
+    let fn_ok = |_| Ok("ok2"); // 类似于: let fn_ok = |_| -> Result<&str, &str> { Ok("ok2") };
+    assert_eq!(o1.or_else(fn_ok), o1); // Ok1 or_else Ok2 = Ok1
+    ```
+- filter方法
+    - 就是迭代器上的filter方法，Option类型实现了Iterator特征
+    ```rust
+    let s1 = Some(3);
+    assert_eq!(s1.filter(|x| x % 2 == 0), None);
+    ```
+- map和map_err
+    - map可以将Some或者Ok的值映射为另外一个
+    - 要让Err中包裹的值可以被映射，就需要使用map_err
+    ```rust
+    let s1 = Some("abcde");
+    let s2 = Some(5);
+    assert_eq!(s1.map(|s: &str| s.chars().count()), s2); // Some1 map = Some2
+
+    let fn_character_count = |s: &str| -> isize { s.parse().unwrap() };
+
+    let o1: Result<&str, &str> = Ok("abcde");
+    let o2: Result<&str, isize> = Ok("abcde");
+    assert_eq!(o1.map_err(fn_character_count), o2); // Ok1 map = Ok2
+
+    let e1: Result<&str, &str> = Err("404");
+    let e2: Result<&str, isize> = Err(404);
+    assert_eq!(e1.map_err(fn_character_count), e2); // Err1 map = Err2
+    ```
+- map_or和map_or_else
+    - map_or在map基础上提供一个基础值，处理None的时候会返回基础值
+    - map_or_else区别与map_or的地方是传入的是一个返回基础值的闭包
+- ok_or和ok_or_else
+    - 这两个可以将Option转换为Result
+*/
+pub fn f04_combine() {
+    let s1 = Some("abcde");
+    let s2 = Some(5);
+    assert_eq!(s1.map(|s: &str| s.chars().count()), s2); // Some1 map = Some2
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn ch10_01() {
+        assert_eq!(f01_panic(), ());
+    }
+
+    #[test]
+    fn ch10_02() {
+        assert_eq!(f02_result(), ());
+    }
+
+    #[test]
+    fn ch10_03() {
+        assert_eq!(f03_question_mark(), ());
+    }
+
+    #[test]
+    fn ch10_04() {
+        assert_eq!(f04_combine(), ());
+    }
+}
