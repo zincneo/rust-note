@@ -18,6 +18,7 @@
 - [ch15 Rust深入类型](./ch15/index.html)
 - [ch16 Rust智能指针](./ch16/index.html)
 - [ch17 Rust并发编程](./ch17/index.html)
+- [ch18 Rust全局变量](./ch18/index.html)
 */
 
 pub mod ch01;
@@ -37,3 +38,4 @@ pub mod ch14;
 pub mod ch15;
 pub mod ch16;
 pub mod ch17;
+pub mod ch18;
