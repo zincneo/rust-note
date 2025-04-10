@@ -14,6 +14,7 @@
     3. 一些因为多线程导致的很隐晦的 BUG，难以复现和解决
 
 ## [1. 使用多线程](./fn.f01_use_thread.html)
+## [2. 线程间通信:消息通道](./ch17_02_mpsc/index.html)
 */
 
 /**
@@ -79,6 +80,8 @@ pub fn f01_use_thread() {
     handle_2.join().unwrap();
 }
 
+pub mod ch17_02_mpsc;
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -86,5 +89,10 @@ mod tests {
     #[test]
     fn ch17_01() {
         assert_eq!(f01_use_thread(), ());
+    }
+
+    #[test]
+    fn ch17_02() {
+        assert_eq!(ch17_02_mpsc::f02_01_use(), ());
     }
 }
