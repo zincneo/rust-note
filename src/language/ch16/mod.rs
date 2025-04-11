@@ -247,6 +247,7 @@ pub mod ch16_05_cell_refcell;
     // a, b释放的时候引用计数-1，引用计数为0，堆上数据正确释放
     ```
 */
+#[allow(dead_code)]
 pub fn f06_weak() {
     let five = Rc::new(5);
     let weak_five = Rc::downgrade(&five);
