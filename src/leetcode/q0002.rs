@@ -36,12 +36,6 @@ pub mod solution {
         pub val: i32,
         pub next: Option<Box<ListNode>>,
     }
-    impl ListNode {
-        #[inline]
-        pub fn new(val: i32) -> Self {
-            ListNode { val, next: None }
-        }
-    }
     fn add_two(
         l1: Option<Box<ListNode>>,
         l2: Option<Box<ListNode>>,
@@ -52,7 +46,10 @@ pub mod solution {
                 if let 0 = carry {
                     None
                 } else {
-                    Some(Box::new(ListNode::new(carry)))
+                    Some(Box::new(ListNode {
+                        val: carry,
+                        next: None,
+                    }))
                 }
             }
             (None, Some(node2)) => add_two(Some(node2), None, carry),
