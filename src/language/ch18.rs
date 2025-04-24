@@ -60,7 +60,8 @@
     fn main() {
         unsafe {
             // STR = Some("test".to_string()); // 报错，不可以将局部生命周期的变量赋值给'static生命周期的变量
-            STR = Some(Box::leak("test".to_string())); // 通过Box::lead主动制造内存泄漏
+            let str = Box::new("test".to_string());
+            STR = Some(Box::leak(str)); // 通过Box::lead主动制造内存泄漏
         }
     }
 
