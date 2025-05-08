@@ -20,6 +20,7 @@
 - [ch17 Rust并发编程](./ch17/index.html)
 - [ch18 Rust全局变量](./ch18/index.html)
 - [ch19 Rust读写文件](./ch19/index.html)
+- [ch20 Rust中的unsafe](./ch20/index.html)
 */
 
 pub mod ch01;
@@ -41,3 +42,4 @@ pub mod ch16;
 pub mod ch17;
 pub mod ch18;
 pub mod ch19;
+pub mod ch20;
