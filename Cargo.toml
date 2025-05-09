@@ -5,4 +5,5 @@ edition = "2021"
 
 [dependencies]
 bevy_ecs = "0.15.3"
+futures = "0.3.31"
 thread_local = "1.1.8"
