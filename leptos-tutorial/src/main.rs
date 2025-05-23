@@ -15,5 +15,6 @@ fn App() -> impl IntoView {
     view! {
         <ch01::Element01_state />
         <ch01::Element02_event />
+        <ch01::ELement03_attribute />
     }
 }

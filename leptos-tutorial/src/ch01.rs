@@ -31,3 +31,38 @@ pub fn Element02_event() -> impl IntoView {
     let (count, set_count) = signal(0);
     view! { <p on:click=move |_| set_count.set(3)>"click event"{count}</p> }
 }
+
+/**
+# 标签属性
+- class
+    1. 通过class:classname直接指定
+    2. 在view!中不直接支持的字符使用class="classname"包裹指定
+    3. 动态指定某个或者多个类名
+        1. class:classname=闭包->bool
+        2. class=("classname", 闭包->bool)
+        3. class=(["classname", ...], 闭包->bool)
+- style
+    1. 通过style:stylename=value直接指定
+    2. 通过style="stylename=value"指定
+    3. 动态style属性值
+        1. style:stylename=闭包->&str
+        2. style=("stylename", 闭包->&str)
+- 其他属性
+    1. attribute:ReadSignal<T>
+    2. attribute=闭包->值
+*/
+#[component]
+pub fn ELement03_attribute() -> impl IntoView {
+    let (count, set_count) = signal(0);
+    view! {
+        <button
+            value=count
+            on:click=move |_| *set_count.write() += 1
+            style:position="absolute"
+            style=("left", move || (200 + count.get()).to_string())
+            class=(["red", "button-20", "rounded"], move || count.get() % 2 == 1)
+        >
+            {count}
+        </button>
+    }
+}
