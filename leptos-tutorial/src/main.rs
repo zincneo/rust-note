@@ -18,5 +18,6 @@ fn App() -> impl IntoView {
         <ch01::Element02_event />
         <ch01::ELement03_attribute />
         <ch02::Element01_component />
+        <ch02::Element02_iteration />
     }
 }
