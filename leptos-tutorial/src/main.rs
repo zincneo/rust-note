@@ -1,5 +1,6 @@
 use leptos::prelude::*;
 mod ch01;
+mod ch02;
 fn main() {
     mount_to_body(App);
 }
@@ -16,5 +17,6 @@ fn App() -> impl IntoView {
         <ch01::Element01_state />
         <ch01::Element02_event />
         <ch01::ELement03_attribute />
+        <ch02::Element01_component />
     }
 }

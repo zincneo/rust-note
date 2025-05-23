@@ -59,7 +59,8 @@ pub fn ELement03_attribute() -> impl IntoView {
             value=count
             on:click=move |_| *set_count.write() += 1
             style:position="absolute"
-            style=("left", move || (200 + count.get()).to_string())
+            style:top="0px"
+            style:left=move || format!("{}px", count.get() * 10 + 100)
             class=(["red", "button-20", "rounded"], move || count.get() % 2 == 1)
         >
             {count}
