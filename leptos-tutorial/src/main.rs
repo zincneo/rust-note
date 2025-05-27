@@ -19,5 +19,6 @@ fn App() -> impl IntoView {
         <ch01::ELement03_attribute />
         <ch02::Element01_component />
         <ch02::Element02_iteration />
+        <ch02::Element03_dynamic />
     }
 }

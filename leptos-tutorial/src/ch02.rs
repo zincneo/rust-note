@@ -36,8 +36,9 @@ pub fn Element01_component() -> impl IntoView {
 }
 
 /**
-# 迭代
-- 在{}中可以使用Vec<impl IntoView>来表示多个元素
+# 静态迭代
+- 在{}中可以通过Vec<_>获取静态视图
+- Vec内容只会渲染一次，之后内存中Vec新增或者删除元素UI上不会动态更新
 */
 #[component]
 pub fn Element02_iteration() -> impl IntoView {
@@ -57,5 +58,51 @@ pub fn Element02_iteration() -> impl IntoView {
         <p>{values.clone()}</p>
         <ul>{values.into_iter().map(|n| view! { <li>{n}</li> }).collect_view()}</ul>
         <ul>{counter_buttons}</ul>
+    }
+}
+
+/**
+# 动态迭代
+- Leptos提供`For`组件生成的动态视图
+    1. each属性值为一个方法或者闭包，返回值必须实现IntoIter特征
+    2. key属性值为一个方法或者闭包，返回值用作每个迭代生成时Dom元素对应的标识，用来计算何时替换DOM元素
+    3. childern属性值为一个方法或者闭包，返回值用作每个迭代生成view
+*/
+#[component]
+pub fn Element03_dynamic() -> impl IntoView {
+    let initial_length = 0_usize;
+    let mut next_counter_id = initial_length;
+    let initial_counters = (0..initial_length)
+        .map(|id| (id, ArcRwSignal::new(id + 1)))
+        .collect::<Vec<_>>();
+    let (counters, set_counters) = signal(initial_counters);
+    let add_counter = move |_| {
+        let sig = ArcRwSignal::new(next_counter_id + 1);
+        set_counters.update(move |counters| counters.push((next_counter_id, sig)));
+        next_counter_id += 1;
+    };
+    view! {
+        <div>
+            <button on:click=add_counter>"Add Counter"</button>
+            <ul>
+                <For
+                    each=move || counters.get()
+                    key=|counter| counter.0
+                    children=move |(id, count)| {
+                        let count = RwSignal::from(count);
+                        view! {
+                            <li>
+                                <button on:click=move |_| *count.write() += 1>{count}</button>
+                                <button on:click=move |_| {
+                                    set_counters
+                                        .write()
+                                        .retain(|(counter_id, _)| { counter_id != &id });
+                                }>"Remove"</button>
+                            </li>
+                        }
+                    }
+                />
+            </ul>
+        </div>
     }
 }
