@@ -1,6 +1,7 @@
 use leptos::prelude::*;
 mod ch01;
 mod ch02;
+mod ch03;
 fn main() {
     mount_to_body(App);
 }
@@ -20,5 +21,6 @@ fn App() -> impl IntoView {
         <ch02::Element01_component />
         <ch02::Element02_iteration />
         <ch02::Element03_dynamic />
+        <ch03::Element01_control_flow />
     }
 }
