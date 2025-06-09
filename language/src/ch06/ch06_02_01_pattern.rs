@@ -1,5 +1,5 @@
 /**
-# <span style="color: #a6da95;">Rust中的模式</span>
+# Rust中的模式
 
 ## 模式内容
 
@@ -113,7 +113,7 @@ println!("{}", x);
 ```
 
 */
-pub fn f02_01_pattern() {
+pub fn pattern() {
     fn print_coordinates(&(x, y, .., z): &(i32, i32, i32, i32, i32, i32)) {
         println!("{x} {y} {z}");
     }

@@ -1,5 +1,5 @@
 /**
-# <span style="color: #a6da95;">match</span>
+# match关键字
 - Rust提供match关键字用来将一个值和一系列值进行匹配
 ```
 // 通用的形式
@@ -59,7 +59,7 @@ match target {
 ```
 */
 #[allow(dead_code)]
-pub fn f01_01_match() {
+pub fn f01_match() {
     enum IpAddr {
         Ipv4,
         Ipv6,
@@ -93,7 +93,7 @@ pub fn f01_01_match() {
 }
 
 /**
-# <span style="color: #a6da95;">if let</span>
+# if let
 - if let用于只想匹配一种模式的情况
 - `if let 模式 = 值 {}`
 - 很适合适用于不能使用`==`运算符判等的类型替代if
@@ -107,7 +107,7 @@ pub fn f01_01_match() {
     }
 ```
 */
-pub fn f01_02_if_let() {
+pub fn f02_if_let() {
     let num = Some(5);
     if let Some(3) = num {
         println!("3");
@@ -117,7 +117,7 @@ pub fn f01_02_if_let() {
 }
 
 /**
-# <span style="color: #a6da95;">matches宏</span>
+# matches宏
 - 用来将一个表达式和一个模式进行匹配
 - 匹配结果返回true和false
 - 同样很适合那些没有实现`==`类型使用
@@ -134,7 +134,7 @@ pub fn f01_02_if_let() {
         .collect();
 ```
 */
-pub fn f01_03_matches() {
+pub fn f03_matches() {
     enum MyEnum {
         Foo,
         Bar,
@@ -147,7 +147,7 @@ pub fn f01_03_matches() {
 }
 
 /**
-# <span style="color: #a6da95;">解构Option枚举</span>
+# 解构Option枚举
 - 由于Option过于常用，因此Rust在prelude中进行了导出，因此可以直接使用Some和None，不需要使用Option::Some,Option::None
 - Rust通过模式匹配的方式来解决其他语言中null异常的问题
 ```rust
@@ -162,7 +162,7 @@ let six = plus_one(five);
 let none = plus_one(None);
 ```
 */
-pub fn f01_04_option() {
+pub fn f04_option() {
     fn plus_one(x: Option<i32>) -> Option<i32> {
         match x {
             None => None,           // 不存在值的情况就不会触发处理逻辑

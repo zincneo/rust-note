@@ -1,5 +1,5 @@
 /**
-# <span style="color: #a6da95;">解构和忽略</span>
+# 解构和忽略
 
 ## 解构语法
 
@@ -181,7 +181,7 @@ match numbers {
 
 */
 #[allow(dead_code)]
-pub fn f02_03_deconstruction() {
+pub fn deconstruction() {
     enum Message {
         Quit,
         Move { x: i32, y: i32 },

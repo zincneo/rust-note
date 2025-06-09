@@ -1,5 +1,5 @@
 /**
-# <span style="color: #a6da95;">模式使用场景</span>
+# 模式使用场景
 
 1. 匹配字面值
 
@@ -129,7 +129,7 @@ match 1 {
 
 7. 解构和忽略(见下一节)
 */
-pub fn f02_02_scence() {
+pub fn scence() {
     match 1 {
         num @ (1 | 2) => {
             println!("{}", num);
