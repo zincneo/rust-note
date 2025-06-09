@@ -45,7 +45,7 @@ impl Summary for Weibo {
 */
 #[allow(unused)]
 #[allow(dead_code)]
-pub fn f02_01_trait() {
+pub fn f01_trait() {
     pub trait Summary {
         fn summarize(&self) -> String;
     }
@@ -215,7 +215,7 @@ impl<T: Add<T, Output = T>> Add for Point<T> {
 }
 ```
 */
-pub fn f02_02_use_trait() {
+pub fn f02_use_trait() {
     trait Test {
         fn test(&self) {
             println!("test");

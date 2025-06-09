@@ -66,7 +66,7 @@ impl Point<f32> {
 }
 ```
 */
-pub fn f01_01_generics() {
+pub fn f01_generics() {
     struct Point<T> {
         x: T,
         y: T,
@@ -107,7 +107,7 @@ let buffer = Buffer::<SIZE> { data: [0; SIZE] };
 println!("Buffer size: {} bytes", buffer.data.len());
 ```
 */
-pub fn f01_02_const_generics() {
+pub fn f02_const_generics() {
     struct Buffer<const N: usize> {
         data: [u8; N],
     }

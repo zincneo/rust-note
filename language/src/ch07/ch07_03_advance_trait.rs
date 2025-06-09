@@ -106,7 +106,7 @@ fn difference<C: Container>(container: &C) {}
     test.test_2(0, 0);
     ```
 */
-pub fn f03_01_type() {
+pub fn f01_type() {
     trait Test1<A, B> {
         fn test_1(&self, _a: A, _b: B) -> bool {
             return true;
@@ -191,7 +191,7 @@ Human::test();
 <Human as Pilot>::test();
 ```
 */
-pub fn f03_02_same_name() {
+pub fn f02_same_name() {
     trait Pilot {
         fn fly(&self);
         fn test() {}
@@ -231,3 +231,20 @@ pub fn f03_02_same_name() {
     <Human as Wizard>::test();
     <Human as Pilot>::test();
 }
+
+/**
+# 默认泛型参数
+当使用泛型类型参数时，可以为其指定一个默认的具体类型，例如标准库中的 std::ops::Add 特征：
+默认类型参数主要用于两个方面：
+- 减少实现的样板代码，例如标准库的加法特征
+    ```rust
+    trait Add<RHS=Self> {
+        type Output;
+
+        fn add(self, rhs: RHS) -> Self::Output;
+    }
+    ```
+- 扩展类型但是无需大幅修改现有的代码
+- 有多个泛型参数的时候，具有默认泛型参数的必须在最后出现
+*/
+pub fn f03_default_generic() {}
