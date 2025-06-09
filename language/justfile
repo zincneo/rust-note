@@ -1,5 +1,5 @@
 la CHAPTER_ID FUNCTION_ID:
-    @cargo test language::ch{{CHAPTER_ID}}::tests::ch{{CHAPTER_ID}}_{{FUNCTION_ID}} -- --nocapture
+    @cargo test ch{{CHAPTER_ID}}::tests::ch{{CHAPTER_ID}}_{{FUNCTION_ID}} -- --nocapture
 
 serve:
     rm -rf target/doc
