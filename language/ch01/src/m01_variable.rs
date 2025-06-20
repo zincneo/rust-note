@@ -28,3 +28,27 @@ pub fn f01_variable() {
 pub fn f02_const_variable() {
     const I32_VAR: i32 = 20;
 }
+
+/**
+# 变量可变性
+- Rust中变量默认在首次绑定值之后不允许再次被修改
+- 如果希望变量可变则需要手动在let之后添加mut关键字
+*/
+pub fn f03_mutability() {
+    let mut _num = 100;
+    _num /= 10;
+}
+
+/**
+# 变量遮蔽
+- Rust在同一个作用域中可以重复定义同名的变量
+- 后定义的变量会屏蔽前面定义的变量
+- 嵌套作用域同样可以产生变量遮蔽，当离开嵌套的作用域会解除遮蔽
+*/
+pub fn f04_shoadwing() {
+    let _num = 10;
+    let _num = 20;
+    {
+        let _num = 5;
+    }
+}
