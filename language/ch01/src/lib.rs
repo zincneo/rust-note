@@ -39,4 +39,12 @@ mod tests {
         assert_eq!(m05_control_flow::f01_if_else(), ());
         assert_eq!(m05_control_flow::f02_match(), ());
     }
+
+    #[test]
+    fn test06_loop() {
+        assert_eq!(m06_loop::f01_for(), ());
+        assert_eq!(m06_loop::f02_loop_while(), ());
+        assert_eq!(m06_loop::f03_break_continue(), ());
+        assert_eq!(m06_loop::f04_label(), ());
+    }
 }
