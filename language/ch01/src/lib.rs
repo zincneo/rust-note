@@ -33,4 +33,10 @@ mod tests {
         assert_eq!(m04_function::f01_function(), ());
         assert_eq!(m04_function::f02_divergence_function(), ());
     }
+
+    #[test]
+    fn test05_control_flow() {
+        assert_eq!(m05_control_flow::f01_if_else(), ());
+        assert_eq!(m05_control_flow::f02_match(), ());
+    }
 }
