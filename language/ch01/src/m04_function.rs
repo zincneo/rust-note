@@ -20,7 +20,6 @@ pub fn f01_function() {
 - 在编程语言中，一个函数调用注定无法结束回到调用它的作用域继续执行，那么这个函数称为发散函数
 - Rust在表示一个函数发散的时候返回值使用`-> !`来表示
 */
-
 pub fn f02_divergence_function() {
     // 1. 死循环
     fn forever() -> ! {
@@ -31,4 +30,30 @@ pub fn f02_divergence_function() {
     fn dead_end() -> ! {
         panic!("panic");
     }
+}
+
+/**
+# 主函数
+- Rust编译的二进制可执行程序提供main函数作为程序的入口
+- main本身是一个泛型函数，返回值类型是一个特征对象`impl std::process::Termination`即可
+    - 满足该特征的类型如()和Result<(),E>是最常见的形式
+- main没有参数列表，想获取参数都使用`std::env`进行解决
+*/
+pub fn f03_main_function() {}
+
+/**
+# const函数
+- const关键字修饰函数使得该函数会在编译期执行
+- 所有调用该函数的地方将会在编译期直接执行并替换为返回值
+- 使用场景
+    1. 用于计算常量表达式
+    2. 结合const泛型使用，见泛型章节
+*/
+pub fn f04_const_function() {
+    const fn cube(num: usize) -> usize {
+        num * num * num
+    }
+    const DIM: usize = cube(2);
+    const ARR: [i32; DIM] = [0; DIM];
+    println!("{:?}", ARR);
 }
