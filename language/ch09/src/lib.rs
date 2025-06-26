@@ -14,15 +14,39 @@
 ## 生命周期标识符
 
 - 生命周期标识符是一种标注语法，在引用变量的类型标识符`&`之后添加
+- 生命周期标识符只能用于函数、结构体、枚举、方法
 - 语法形式是以`'`开头然后通常跟上一个小写字母
 - 常见的形式`&'a i32`，`&'b i64`
 - 注意生命周期标识符在使用之前都需要在泛型参数列表中声明
-
 */
+mod m01_lifetime;
+mod m02_method;
+mod m03_struct;
+mod m04_static;
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
-    fn test01_lifetime() {}
+    fn test01_lifetime() {
+        assert_eq!(m01_lifetime::f01_lifetime(), ());
+        assert_eq!(m01_lifetime::f02_function(), ());
+    }
+
+    #[test]
+    fn test02_method() {
+        assert_eq!(m02_method::f01_method(), ());
+    }
+
+    #[test]
+    fn test03_struct() {
+        assert_eq!(m03_struct::f01_struct(), ());
+    }
+
+    #[test]
+    fn test04_static() {
+        assert_eq!(m04_static::f01_static(), ());
+        assert_eq!(m04_static::f02_case(), ());
+    }
 }
