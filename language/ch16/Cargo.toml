@@ -18,3 +18,7 @@ path = "bin/ipc.rs"
 [[bin]]
 name = "deadlock"
 path = "bin/deadlock.rs"
+
+[[bin]]
+name = "automic"
+path = "bin/automic.rs"
