@@ -1,0 +1,16 @@
+[package]
+name = "ch16"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+fork = "0.2.0"
+ipc-channel = "0.20.0"
+
+[[bin]]
+name = "process"
+path = "bin/process.rs"
+
+[[bin]]
+name = "ipc"
+path = "bin/ipc.rs"
