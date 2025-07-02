@@ -60,3 +60,32 @@ pub fn f02_barrier() {
         handle.join();
     }
 }
+
+static mut VAL: usize = 0;
+static INIT: std::sync::Once = std::sync::Once::new();
+/**
+# 只调度一次的函数
+
+- 一些场景需要某个函数在多线程环境下只能被调度一次
+- 标准库提供了`std::sync::Once`来实现这一功能
+- 该类型的实例多次调用call_once方法(参数是一个闭包), 只有第一次会执行
+*/
+pub fn f03_call_once() {
+    use std::thread;
+    // 100个线程，每一个都执行call_once，只会执行一次
+    (0..100)
+        .map(|idx| {
+            thread::spawn(move || {
+                thread::sleep(std::time::Duration::from_millis(200));
+                INIT.call_once(|| unsafe {
+                    VAL = idx;
+                });
+            })
+        })
+        .collect::<Vec<_>>()
+        .into_iter()
+        .for_each(|handle| {
+            handle.join();
+        });
+    println!("{:?}", unsafe { VAL });
+}

@@ -11,6 +11,7 @@ mod tests {
     fn test01_thread() {
         assert_eq!(m01_thread::f01_thread(), ());
         assert_eq!(m01_thread::f02_barrier(), ());
+        assert_eq!(m01_thread::f03_call_once(), ());
     }
 
     #[test]
