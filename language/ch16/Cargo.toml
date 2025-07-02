@@ -14,3 +14,7 @@ path = "bin/process.rs"
 [[bin]]
 name = "ipc"
 path = "bin/ipc.rs"
+
+[[bin]]
+name = "deadlock"
+path = "bin/deadlock.rs"
