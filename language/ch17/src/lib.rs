@@ -1,6 +1,8 @@
 #![allow(dead_code)]
 #![allow(unused)]
 
+use std::io::{Read, Write};
+
 /**
 # path模块
 - 提供Path、PathBuf两个类用来处理文件路径
@@ -16,6 +18,9 @@
     - is_relative 是否是相对路径
     - canonicalize 简化路径
     - strip_prefix 剥离前缀
+    - is_file 是否是文件
+    - is_dir 是否是文件夹
+    - is_symlink 是否是连接文件
 */
 pub fn f01_path() {
     use std::ffi::OsStr;
@@ -68,6 +73,66 @@ pub fn f01_path() {
     }
 }
 
+/**
+# 文件读写
+- std::fs模块提供文件类型File
+- 打开/创建文件
+    - `File::open`、`File::create`、`File::create_new`
+    - 都返回Result<File, Error>
+    - 离开作用域文件自动关闭，变量被丢弃
+    - open以可读模式打开
+    - create以可写模式创建或打开文件
+    - create_new在文件存在时会返回Err
+- std::fs模块提供访问控制类OpenOptions
+    - 提供write/read/append三个方法来控制打开时的权限
+    - 提供open方法打开指定路径的文件
+- 读取文件内容
+    - std::fs::read方法直接以字节方式读取路径内容，返回一个`Result<Vec[u8], _>`
+    - File类型的读取方法
+        - read_to_string将整个文件读入为字符串
+        - read_to_end将整个读入为二进制动态数组
+- 写入文件内容
+    - std::fs::write方法直接写入字符串到文件中
+    - 写入或者追加写入需要通过打开方式控制
+*/
+fn fn02_fs() {
+    use std::fs;
+    use std::path::Path;
+    let path = Path::new("foo.txt");
+    {
+        let file = fs::File::open(path);
+    }
+    {
+        let file = fs::File::create(path);
+    }
+    {
+        let file = fs::File::create_new(path);
+    }
+    // 指定打开时的权限
+    {
+        let file = fs::OpenOptions::new().read(true).write(true).open(path);
+    }
+    // 读取文件内容
+    {
+        let data = fs::read(path);
+        if let Ok(mut file) = fs::File::open(path) {
+            let mut data = String::new();
+            let size = file.read_to_string(&mut data);
+        }
+        if let Ok(mut file) = fs::File::open(path) {
+            let mut data = Vec::new();
+            let size = file.read_to_end(&mut data);
+        }
+    }
+    // 写入文件内容
+    {
+        fs::write(path, "test");
+        if let Ok(mut file) = fs::OpenOptions::new().write(true).open(path) {
+            file.write("test".as_bytes());
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -75,5 +140,10 @@ mod tests {
     #[test]
     fn test01_path() {
         assert_eq!(f01_path(), ());
+    }
+
+    #[test]
+    fn test02_fs() {
+        assert_eq!(fn02_fs(), ());
     }
 }
