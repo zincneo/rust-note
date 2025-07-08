@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+bytes = "1.10.1"
 mini-redis = "0.4.1"
 tokio = { version = "1.46.1", features = ["full"] }
 
@@ -15,6 +16,14 @@ path = "bin/first.rs"
 name = "job"
 path = "bin/job.rs"
 
+[[bin]]
+name = "vec-bytes"
+path = "bin/vec-bytes.rs"
+
 [[example]]
 name = "hello-redis"
 path = "examples/hello-redis.rs"
+
+[[example]]
+name = "server-db"
+path = "examples/server-db.rs"
