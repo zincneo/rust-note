@@ -10,3 +10,11 @@ tokio = { version = "1.46.1", features = ["full"] }
 [[bin]]
 name = "first"
 path = "bin/first.rs"
+
+[[bin]]
+name = "job"
+path = "bin/job.rs"
+
+[[example]]
+name = "hello-redis"
+path = "examples/hello-redis.rs"
