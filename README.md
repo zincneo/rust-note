@@ -2,6 +2,7 @@
 
 - 01-language
 - 02-tokio:asynchronous Rust runtime
+- 03-clap:Command Line Argument Parser for Rust
 - tonic:gRPC client & server
 - actix-web:backend-framework
 - rocket:backend-framework
