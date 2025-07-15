@@ -1,0 +1,3 @@
+compile:
+    cargo build --release
+    g++ -o main main.cpp -L ./target/release/ -l rust_lib
