@@ -11,3 +11,7 @@ jsonxf = "1.1.1" # JSON pretty print 格式化
 mime = "0.3.17" # 处理mime类型
 reqwest = { version = "0.12.22", features = ["json"] } # HTTP客户端
 tokio = { version = "1.46.1", features = ["full"] } # 异步运行时库
+
+[[bin]]
+name = "first"
+path = "bin/first.rs"
