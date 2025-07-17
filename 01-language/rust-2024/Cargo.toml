@@ -1,0 +1,10 @@
+[package]
+name = "rust-2024"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+[[bin]]
+name = "if-let"
+path = "bin/if-let.rs"
