@@ -1,5 +1,6 @@
 # Rust Note
 
+- 00-cargo
 - 01-language
 - 02-tokio:asynchronous Rust runtime
 - 03-clap:Command Line Argument Parser for Rust
