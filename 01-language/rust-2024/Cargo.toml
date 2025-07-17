@@ -8,3 +8,7 @@ edition = "2024"
 [[bin]]
 name = "if-let"
 path = "bin/if-let.rs"
+
+[[bin]]
+name = "let-chains"
+path = "bin/let-chains.rs"
