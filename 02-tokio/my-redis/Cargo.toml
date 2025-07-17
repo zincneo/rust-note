@@ -7,35 +7,3 @@ edition = "2024"
 bytes = "1.10.1"
 mini-redis = "0.4.1"
 tokio = { version = "1.46.1", features = ["full"] }
-
-[[bin]]
-name = "first"
-path = "bin/first.rs"
-
-[[bin]]
-name = "job"
-path = "bin/job.rs"
-
-[[bin]]
-name = "vec-bytes"
-path = "bin/vec-bytes.rs"
-
-[[bin]]
-name = "channel"
-path = "bin/channel.rs"
-
-[[bin]]
-name = "server"
-path = "bin/server.rs"
-
-[[bin]]
-name = "client"
-path = "bin/client.rs"
-
-[[example]]
-name = "hello-redis"
-path = "examples/hello-redis.rs"
-
-[[example]]
-name = "server-db"
-path = "examples/server-db.rs"
