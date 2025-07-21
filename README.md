@@ -5,7 +5,7 @@
 - 02-tokio:asynchronous Rust runtime
 - 03-clap:Command Line Argument Parser for Rust
 - 04-something:some common crates
-- tonic:gRPC client & server
+- 05-egui:an easy-to-use GUI in pure Rust
 - actix-web:backend-framework
 - rocket:backend-framework
 - axum:backend-framework
