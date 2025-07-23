@@ -1,6 +1,8 @@
 mod ch01_hello;
 mod ch02_widgets;
 mod ch03_custom_widget;
+mod ch04_layout;
+
 use std::env;
 fn main() {
     let mut args = env::args().into_iter();
@@ -19,6 +21,9 @@ fn main() {
         }
         "3" => {
             ch03_custom_widget::run();
+        }
+        "4" => {
+            ch04_layout::run();
         }
         _ => {
             println!("不存在对应的示例，请输入存在的章节编号，如:1、2、3...");
