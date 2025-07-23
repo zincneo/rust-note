@@ -1,5 +1,23 @@
-
 mod ch01_hello;
+mod ch02_widgets;
+use std::env;
 fn main() {
-    ch01_hello::Hello::run();
+    let mut args = env::args().into_iter();
+    let Some(_arg_0) = args.next() else {
+        return;
+    };
+    let Some(arg_1) = args.next() else {
+        return;
+    };
+    match arg_1.as_str() {
+        "1" => {
+            ch01_hello::run();
+        }
+        "2" => {
+            ch02_widgets::run();
+        }
+        _ => {
+            println!("不存在对应的示例，请输入存在的章节编号，如:1、2、3...");
+        }
+    }
 }
