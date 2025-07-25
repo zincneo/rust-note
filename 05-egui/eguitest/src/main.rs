@@ -4,6 +4,7 @@ mod ch03_custom_widget;
 mod ch04_layout;
 mod ch05_counter;
 mod ch06_window;
+mod ch07_text;
 
 use std::env;
 fn main() {
@@ -32,6 +33,9 @@ fn main() {
         }
         "6" => {
             ch06_window::run();
+        }
+        "7" => {
+            ch07_text::run();
         }
         _ => {
             println!("不存在对应的示例，请输入存在的章节编号，如:1、2、3...");
