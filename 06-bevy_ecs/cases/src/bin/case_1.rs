@@ -12,26 +12,40 @@
 ## Component
 
 组件，实体可以包含任意的组件
+
+### Component Bundle
+通过derive宏实现Bundle特征的类型字段必须都是组件，该类型的实例可以作为world.spawn的参数来创建实体
 */
 
 #![allow(dead_code)]
 use bevy_ecs::prelude::*;
 
-#[derive(Debug, Component)]
-struct Poisition(f32, f32);
+#[derive(Debug, Default, Component)]
+struct Position(f32, f32);
 
-#[derive(Debug, Component)]
+#[derive(Debug, Default, Component)]
 struct Velocity(f32, f32);
+
+#[derive(Default, Component)]
+struct Player;
+
+#[derive(Bundle, Default)]
+struct PlayerBundle {
+    player: Player,
+    position: Position,
+    velocity: Velocity,
+}
 
 fn main() {
     // 1. 创建世界空间
     let mut world = World::default();
 
     // 2. 在世界中创建一个实体，该实体包含组件位置、速度
-    let entity = world.spawn((Poisition(0., 0.), Velocity(0., 0.))).id();
+    let _entity = world.spawn((Position(0., 0.), Velocity(0., 0.))).id();
+    let entity = world.spawn(PlayerBundle::default()).id();
 
     // 3. 通过实体在世界中查找到其组件
-    let position = world.get::<Poisition>(entity);
+    let position = world.get::<Position>(entity);
 
     println!("{:?}", position);
 
