@@ -1,11 +1,10 @@
 use bevy_ecs::prelude::*;
+use crossbeam::channel::{Receiver, Sender, unbounded};
+use std::collections::HashMap;
 use std::sync::RwLockReadGuard;
 use std::thread::spawn;
 use std::{
-    sync::{
-        Arc, LazyLock, Mutex, RwLock,
-        mpsc::{Receiver, Sender, channel},
-    },
+    sync::{Arc, LazyLock, Mutex, RwLock},
     thread::JoinHandle,
 };
 
@@ -20,17 +19,25 @@ struct Model {
     reciver_handle: Mutex<Option<JoinHandle<()>>>,
 }
 
+// 将计划表作为可变引用传入
+#[derive(Resource, Default)]
+struct ModelSystems(HashMap<String, Box<dyn Fn(&mut Schedule) + Send + Sync>>);
+
+#[allow(dead_code)]
 impl Model {
     fn new() -> Self {
-        let (tx, rx) = channel::<ModelEvent>();
+        let (tx, rx) = unbounded::<ModelEvent>();
         let reciver_handle = Mutex::new(Some(spawn(move || {
             reciver_thread(rx);
         })));
-        Self {
-            world: Arc::new(RwLock::new(World::default())),
+        let mut world = World::default();
+        world.insert_resource(ModelSystems::default());
+        let model = Self {
+            world: Arc::new(RwLock::new(world)),
             sender: tx,
             reciver_handle,
-        }
+        };
+        model
     }
 
     fn stop(&self) {
@@ -55,8 +62,13 @@ impl Model {
         let Ok(mut world) = self.world.write() else {
             return;
         };
-        // #TODO 通过资源获取将要执行的系统
         let mut schedule = Schedule::default();
+        let Some(systems) = world.get_resource::<ModelSystems>() else {
+            return;
+        };
+        for (_, system) in systems.0.iter() {
+            system(&mut schedule);
+        }
         schedule.run(&mut world);
     }
 }
@@ -100,8 +112,12 @@ fn mock_ui_thread() {
         match input.trim() {
             "stop" => {
                 let _ = tx.send(ModelEvent::Stop);
+                break;
             }
-            _ => println!("Invalid String"),
+            "next" => {
+                let _ = tx.send(ModelEvent::Next);
+            }
+            _ => println!("无效输入，请输入 'next' 或 'stop'"),
         }
     }
 }
