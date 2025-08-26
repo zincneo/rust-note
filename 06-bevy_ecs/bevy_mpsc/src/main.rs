@@ -19,7 +19,6 @@ struct Model {
     reciver_handle: Mutex<Option<JoinHandle<()>>>,
 }
 
-// 将计划表作为可变引用传入
 #[derive(Resource, Default)]
 struct ModelSystems(HashMap<String, Box<dyn Fn(&mut Schedule) + Send + Sync>>);
 
@@ -66,8 +65,8 @@ impl Model {
         let Some(systems) = world.get_resource::<ModelSystems>() else {
             return;
         };
-        for (_, system) in systems.0.iter() {
-            system(&mut schedule);
+        for (_, add) in systems.0.iter() {
+            add(&mut schedule);
         }
         schedule.run(&mut world);
     }
