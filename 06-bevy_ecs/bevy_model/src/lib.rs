@@ -6,6 +6,7 @@ use bevy_ecs::{schedule::Schedule, world::World};
 use crossbeam::channel::{Receiver, Sender, unbounded};
 use dashmap::DashMap;
 use event::*;
+use log::error;
 use std::{
     ops::DerefMut,
     sync::{Arc, LazyLock},
@@ -13,6 +14,8 @@ use std::{
 };
 use system::*;
 use ui_store::*;
+#[cfg(test)]
+mod tests;
 
 pub struct Model {
     sender: ArcSwapOption<Sender<Box<dyn ModelEvent>>>,
@@ -23,6 +26,9 @@ pub struct Model {
 
 impl Model {
     fn new() -> Self {
+        #[cfg(debug_assertions)]
+        let _ = env_logger::builder().is_test(true).try_init();
+
         Self {
             sender: ArcSwapOption::from(None),
             handle: ArcSwapOption::from(None),
@@ -47,12 +53,11 @@ impl Model {
         self.ui_store.clear();
         self.sender.swap(None)?.send(BasicEvent::stop()).ok()?;
         let handle = self.handle.swap(None)?;
-        match std::sync::Arc::try_unwrap(handle) {
-            Ok(handle) => Some(handle.join().ok()?),
-            Err(_) => {
-                println!("Arc<JoinHandle<()>> is held by multiple owners.");
-                None
-            }
+        if let Ok(handle) = std::sync::Arc::try_unwrap(handle) {
+            Some(handle.join().ok()?)
+        } else {
+            error!("Arc<JoinHandle<()>> is held by multiple owners.");
+            panic!("Arc<JoinHandle<()>> is held by multiple owners.");
         }
     }
 
@@ -121,4 +126,4 @@ impl Model {
     }
 }
 
-pub static MODEL: LazyLock<Model> = LazyLock::new(Model::new);
+pub(crate) static MODEL: LazyLock<Model> = LazyLock::new(Model::new);

@@ -1,0 +1,2 @@
+test:
+    RUST_LOG=bevy_model=info cargo test test_2 -- --nocapture

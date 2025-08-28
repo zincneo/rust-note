@@ -1,3 +1,4 @@
+use bevy_ecs::component::Component;
 use dashmap::{DashMap, DashSet};
 use std::{
     any::{Any, TypeId},
@@ -5,7 +6,7 @@ use std::{
     sync::LazyLock,
 };
 
-#[derive(PartialEq, Eq, Hash, Clone, Copy)]
+#[derive(PartialEq, Eq, Hash, Clone, Copy, Component, Debug)]
 pub struct UIInstanceId(TypeId, u16);
 
 pub trait UITrait: Any + PartialEq + Clone + Send + Sync + 'static {}
@@ -83,10 +84,13 @@ impl UIState {
     where
         T: UITrait,
     {
-        let old = self.take_new::<T>()?;
-        if instance != old {
-            let instance = instance.clone();
-            self.new = Some(Box::new(instance));
+        let old = self.take_new::<T>();
+        match old {
+            Some(old) if old == instance => (),
+            _ => {
+                let instance = instance.clone();
+                self.new = Some(Box::new(instance));
+            }
         }
         self.set_old(instance);
         Some(())

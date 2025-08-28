@@ -1,11 +1,14 @@
-use bevy_ecs::world::World;
-
 use crate::{MODEL, system::ISystemQueue};
+use bevy_ecs::world::World;
+use colored::Colorize;
+use log::info;
+use std::fmt::Debug;
 
-pub trait ModelEvent: Sync + Send + 'static {
+pub trait ModelEvent: Debug + Sync + Send + 'static {
     fn handle(&self, world: &mut bevy_ecs::world::World) -> BasicEvent;
 }
 
+#[derive(Debug)]
 pub(crate) struct Stop;
 
 #[allow(private_interfaces)]
@@ -15,8 +18,28 @@ pub enum BasicEvent {
     Nothing,
 }
 
+impl Debug for BasicEvent {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let event_str = match self {
+            Self::Stop(Stop) => "--   BasicEvent(Stop)   --".red(),
+            Self::Next => "--   BasicEvent(Next)   --".bright_blue(),
+            Self::Nothing => "--  BasicEvent(Nothing) --".bright_green(),
+        };
+        write!(
+            f,
+            "{} {} {}",
+            "[".yellow().bold(),
+            event_str,
+            "]".yellow().bold()
+        )
+    }
+}
+
 impl ModelEvent for BasicEvent {
     fn handle(&self, world: &mut World) -> BasicEvent {
+        #[cfg(debug_assertions)]
+        info!("[ECS Thread Handling: {:?}]", self);
+
         match self {
             BasicEvent::Next => {
                 self.handle_next(world);
