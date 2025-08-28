@@ -99,6 +99,9 @@ impl Model {
     where
         T: UITrait,
     {
+        if MODEL.ui_store.get(&instance_id)?.new_is_none() {
+            return None;
+        }
         MODEL
             .ui_store
             .get_mut(&instance_id)?

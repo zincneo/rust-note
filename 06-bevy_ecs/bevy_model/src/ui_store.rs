@@ -66,6 +66,10 @@ impl UIState {
         }
     }
 
+    pub(crate) fn new_is_none(&self) -> bool {
+        self.new.is_none()
+    }
+
     pub(crate) fn take_new<T>(&mut self) -> Option<T>
     where
         T: UITrait,
