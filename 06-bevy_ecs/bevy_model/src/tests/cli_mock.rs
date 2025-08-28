@@ -12,6 +12,7 @@ pub(super) fn auto_mock() {
     let mut handles = Vec::new();
     let ui_pos = Position(0., 0.);
     let ui_insance_id = Model::add_ui_instance(ui_pos);
+    
     let sender = Model::sender();
 
     // send event thread
@@ -20,6 +21,7 @@ pub(super) fn auto_mock() {
         sleep(Duration::from_secs(1));
         for _ in 0..5 {
             sleep(Duration::from_secs(2));
+            // Add system to queue
             Model::push_system(|s| {
                 s.add_systems(move_pos);
             });

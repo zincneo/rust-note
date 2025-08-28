@@ -4,13 +4,13 @@ mod cli_mock;
 
 #[test]
 fn test_1() {
-    MODEL.init();
-    MODEL.deinit();
+    Model::init();
+    Model::deinit();
 }
 
 #[test]
 fn test_2() {
-    MODEL.init();
+    Model::init();
     cli_mock::auto_mock();
-    MODEL.deinit();
+    Model::deinit();
 }

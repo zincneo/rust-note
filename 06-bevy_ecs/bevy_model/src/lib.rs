@@ -1,6 +1,6 @@
-mod event;
-mod system;
-mod ui_store;
+pub mod event;
+pub mod system;
+pub mod ui_store;
 use arc_swap::ArcSwapOption;
 use bevy_ecs::{schedule::Schedule, world::World};
 use crossbeam::channel::{Receiver, Sender, unbounded};
@@ -37,22 +37,22 @@ impl Model {
         }
     }
 
-    pub fn init(&self) {
-        self.deinit();
+    pub fn init() {
+        Model::deinit();
         let (tx, rx) = unbounded::<Box<dyn ModelEvent>>();
         let tx = Some(Arc::new(tx));
-        self.sender.store(tx);
+        MODEL.sender.store(tx);
         let handle = Some(Arc::new(spawn(move || {
             Model::world_thrad(rx);
         })));
-        self.handle.store(handle);
+        MODEL.handle.store(handle);
     }
 
-    pub fn deinit(&self) -> Option<()> {
-        self.system_queue.clear();
-        self.ui_store.clear();
-        self.sender.swap(None)?.send(BasicEvent::stop()).ok()?;
-        let handle = self.handle.swap(None)?;
+    pub fn deinit() -> Option<()> {
+        MODEL.system_queue.clear();
+        MODEL.ui_store.clear();
+        MODEL.sender.swap(None)?.send(BasicEvent::stop()).ok()?;
+        let handle = MODEL.handle.swap(None)?;
         if let Ok(handle) = std::sync::Arc::try_unwrap(handle) {
             Some(handle.join().ok()?)
         } else {
