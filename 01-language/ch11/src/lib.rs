@@ -52,6 +52,9 @@ Rust 提供了相应概念用于代码的组织管理：
 
 mod m01_module;
 mod m02_visible;
+#[path = "m03_path/m03_path.rs"]
+mod m03_path;
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -65,5 +68,10 @@ mod tests {
     fn test02_visiable() {
         assert_eq!(m02_visible::f01_visible(), ());
         assert_eq!(m02_visible::f02_use(), ());
+    }
+
+    #[test]
+    fn test03_path() {
+        assert_eq!(m03_path::path(), ());
     }
 }
