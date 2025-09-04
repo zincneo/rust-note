@@ -1,23 +1,27 @@
-pub mod event;
-pub mod system;
-pub mod ui_store;
-use arc_swap::ArcSwapOption;
-use bevy_ecs::{schedule::Schedule, world::World};
-use crossbeam::channel::{Receiver, Sender, unbounded};
-use dashmap::DashMap;
-use event::*;
-use log::error;
+mod modules {
+    pub mod event;
+    pub mod system;
+    pub mod ui;
+}
+
 use std::{
-    ops::DerefMut,
     sync::{Arc, LazyLock},
     thread::{JoinHandle, spawn},
 };
-use system::*;
-use ui_store::*;
+
+use arc_swap::ArcSwapOption;
+use bevy_ecs::{entity::Entity, schedule::Schedule, world::World};
+use crossbeam::channel::{Receiver, Sender, unbounded};
+use log::{error, info};
+pub use modules::event::*;
+use modules::system::*;
+pub use modules::ui::*;
+
 #[cfg(test)]
+#[path = "tests/tests.rs"]
 mod tests;
 
-pub struct Model {
+struct Model {
     sender: ArcSwapOption<Sender<Box<dyn ModelEvent>>>,
     handle: ArcSwapOption<JoinHandle<()>>,
     system_queue: SystemQueue,
@@ -33,17 +37,32 @@ impl Model {
             sender: ArcSwapOption::from(None),
             handle: ArcSwapOption::from(None),
             system_queue: SystemQueue::get_queue(),
-            ui_store: DashMap::with_shard_amount(32),
+            ui_store: UIStore::new(),
         }
     }
+}
 
+fn ecs_thread(rx: Receiver<Box<dyn ModelEvent>>) {
+    let mut world = World::default();
+    while let Ok(event) = rx.recv() {
+        let event = event.handle(&mut world);
+        if let BasicEvent::Stop(Stop) = event {
+            break;
+        } else {
+            event.handle(&mut world);
+        }
+    }
+}
+
+pub mod model {
+    use super::*;
     pub fn init() {
-        Model::deinit();
+        deinit();
         let (tx, rx) = unbounded::<Box<dyn ModelEvent>>();
         let tx = Some(Arc::new(tx));
         MODEL.sender.store(tx);
         let handle = Some(Arc::new(spawn(move || {
-            Model::world_thrad(rx);
+            ecs_thread(rx);
         })));
         MODEL.handle.store(handle);
     }
@@ -54,28 +73,13 @@ impl Model {
         MODEL.sender.swap(None)?.send(BasicEvent::stop()).ok()?;
         let handle = MODEL.handle.swap(None)?;
         if let Ok(handle) = std::sync::Arc::try_unwrap(handle) {
+            #[cfg(debug_assertions)]
+            info!("wait ecs thread stop");
             Some(handle.join().ok()?)
         } else {
+            #[cfg(debug_assertions)]
             error!("Arc<JoinHandle<()>> is held by multiple owners.");
             panic!("Arc<JoinHandle<()>> is held by multiple owners.");
-        }
-    }
-
-    fn world_thrad(rx: Receiver<Box<dyn ModelEvent>>) {
-        let mut world = World::default();
-        while let Ok(event) = rx.recv() {
-            if let BasicEvent::Stop(Stop) = event.handle(&mut world) {
-                break;
-            }
-        }
-    }
-
-    pub fn sender() -> Arc<Sender<Box<dyn ModelEvent>>> {
-        match MODEL.sender.load_full() {
-            Some(sender) => sender,
-            None => {
-                panic!("Earlier than MODEL.init() or later than MODEL.deinit()");
-            }
         }
     }
 
@@ -85,45 +89,29 @@ impl Model {
     {
         MODEL.system_queue.push(Box::new(system));
     }
+}
 
-    pub fn add_ui_instance<T>(instance: T) -> UIInstanceId
-    where
-        T: UITrait,
-    {
-        let instance_id = UIInstanceId::new_instance::<T>();
-        MODEL.ui_store.insert(instance_id, UIState::new(instance));
-        instance_id
-    }
-
-    pub fn remove_ui_instance(instance_id: UIInstanceId) {
-        UIInstanceId::destory_instance(instance_id);
-        MODEL.ui_store.remove(&instance_id);
-    }
-
-    pub fn get_ui_instance<T>(instance_id: UIInstanceId) -> Option<T>
-    where
-        T: UITrait,
-    {
-        if MODEL.ui_store.get(&instance_id)?.new_is_none() {
-            return None;
-        }
-        MODEL
-            .ui_store
-            .get_mut(&instance_id)?
-            .deref_mut()
-            .take_new::<T>()
-    }
-
-    pub fn set_instance<T>(instance: T, instance_id: UIInstanceId) -> Option<()>
-    where
-        T: UITrait,
-    {
-        MODEL
-            .ui_store
-            .get_mut(&instance_id)?
-            .deref_mut()
-            .set_new(instance)
+pub mod event {
+    use super::*;
+    pub fn send(event: Box<dyn ModelEvent>) -> Option<()> {
+        MODEL.sender.load_full()?.send(event).ok()?;
+        Some(())
     }
 }
 
-pub(crate) static MODEL: LazyLock<Model> = LazyLock::new(Model::new);
+pub mod ui {
+    use super::*;
+    pub fn insert<T: UITriat>(entity: Entity, data: T) -> Option<()> {
+        MODEL.ui_store.insert::<T>(entity, data)
+    }
+
+    pub fn query<T: UITriat>(entity: Entity) -> Option<T> {
+        MODEL.ui_store.query::<T>(entity)
+    }
+
+    pub fn remove(entity: Entity) -> Option<()> {
+        MODEL.ui_store.remove(entity)
+    }
+}
+
+static MODEL: LazyLock<Model> = LazyLock::new(Model::new);
