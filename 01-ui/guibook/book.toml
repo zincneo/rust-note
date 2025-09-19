@@ -1,0 +1,5 @@
+[book]
+authors = ["zincneo"]
+language = "en"
+src = "src"
+title = "Rust GUI"
