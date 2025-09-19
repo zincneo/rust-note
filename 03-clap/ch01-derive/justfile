@@ -1,8 +1,0 @@
-first:
-    cargo run --bin first -- --help
-
-second:
-    cargo run --bin second -- --help
-
-third:
-    cargo run --bin third -- --help
