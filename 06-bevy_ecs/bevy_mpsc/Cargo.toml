@@ -1,8 +1,0 @@
-[package]
-name = "bevy_mpsc"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-bevy_ecs = "0.16.1"
-crossbeam = { version = "0.8.4", features = ["crossbeam-channel"] }

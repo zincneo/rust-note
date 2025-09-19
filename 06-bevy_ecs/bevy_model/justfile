@@ -1,3 +1,0 @@
-# Run test name with output
-test name:
-    RUST_LOG=bevy_model=info cargo test {{name}} -- --nocapture
