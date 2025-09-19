@@ -4,7 +4,6 @@
 - 01-language
 - 02-tokio:asynchronous Rust runtime
 - 03-clap:Command Line Argument Parser for Rust
-- 04-something:some common crates
 - actix-web:backend-framework
 - rocket:backend-framework
 - axum:backend-framework
