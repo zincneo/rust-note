@@ -6,3 +6,7 @@
   - guibook - 框架对比
   - egui-examples - egui的一些例子
 - 02 thread: Rust线程相关的用法/库
+  - native - 标准库线程相关的用法
+  - crossbeam - 提供一些并发工具
+    - crossbeam_channel 性能比官方库更好，而且是多发多收通道，并且提供超时API和强大的select宏
+  - parking_lot - 互斥锁、读写锁的替代

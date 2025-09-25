@@ -12,6 +12,7 @@ fn run_demo(demo_name: String) {
     match demo_name.as_str() {
         "thread" => demo::thread::run(),
         "mpsc" => demo::mpsc::run(),
+        "lock" => demo::lock::run(),
         _ => println!("Undefined case"),
     }
 }
