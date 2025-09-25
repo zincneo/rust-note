@@ -4,8 +4,8 @@
 
 # gui-libs
 
+- [egui](./egui/basic.md)
 - [tauri]()
-- [bevy]()
 - [iced]()
 - [slint]()
 - [gtk-rs]()
