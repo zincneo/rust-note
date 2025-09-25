@@ -11,6 +11,8 @@ fn main() {
 fn run_demo(demo_name: String) {
     match demo_name.as_str() {
         "scope" => demo::scope::run(),
+        "channel" => demo::channel::run(),
+        "select" => demo::channel::run_select(),
         _ => println!("Undefined case"),
     }
 }
