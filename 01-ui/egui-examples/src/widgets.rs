@@ -21,6 +21,10 @@ impl Default for Enum {
 }
 
 impl eframe::App for Widgets {
+    fn clear_color(&self, _visuals: &egui::Visuals) -> [f32; 4] {
+        egui::Rgba::TRANSPARENT.to_array() // Make sure we don't paint anything behind the rounded corners
+    }
+
     fn update(&mut self, ctx: &egui::Context, _: &mut eframe::Frame) {
         use eframe::egui::widgets;
         egui::CentralPanel::default().show(ctx, |ui| {
