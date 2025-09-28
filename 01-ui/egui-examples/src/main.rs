@@ -1,6 +1,6 @@
 use std::env;
 
-use egui_examples::counter;
+use egui_examples::{counter, widgets};
 
 fn main() {
     let mut args = env::args();
@@ -15,6 +15,7 @@ fn main() {
 fn run_case(case_name: String) {
     match case_name.as_str() {
         "counter" => counter::run(),
+        "widgets" => widgets::run(),
         _ => println!("Undefined case"),
     };
     println!("{case_name} end");

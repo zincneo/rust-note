@@ -4,4 +4,15 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-eframe = "0.32.3"
+eframe = { version = "0.32.3" }
+egui_extras = { version = "0.32.3", features = ["default", "image"] }
+
+[profile.release]
+lto = "fat"
+opt-level = 3
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[build]
+rustflags = ["-C", "target-cpu=native"]

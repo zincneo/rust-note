@@ -1,5 +1,3 @@
-
-
 use eframe::*;
 
 #[derive(Default)]
