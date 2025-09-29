@@ -1,6 +1,6 @@
 use std::env;
 
-use egui_examples::{counter, fonts, layout, widgets, window_frame};
+use egui_examples::{counter, fonts, layout, painter, widgets, window_frame};
 
 fn main() {
     let mut args = env::args();
@@ -19,6 +19,7 @@ fn run_case(case_name: String) {
         "window_frame" => window_frame::run(),
         "layout" => layout::run(),
         "fonts" => fonts::run(),
+        "painter" => painter::run(),
         _ => println!("Undefined case"),
     };
     println!("{case_name} end");
