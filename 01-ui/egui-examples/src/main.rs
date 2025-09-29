@@ -1,7 +1,7 @@
 use std::env;
 
 use egui_examples::{
-    context, counter, custom_widget, fonts, layout, painter, widgets, window_frame,
+    context, counter, custom_widget, fonts, layout, painter, style, widgets, window_frame,
 };
 
 fn main() {
@@ -24,6 +24,7 @@ fn run_case(case_name: String) {
         "painter" => painter::run(),
         "custom_widget" => custom_widget::run(),
         "context" => context::run(),
+        "style" => style::run(),
         _ => println!("Undefined case"),
     };
     println!("{case_name} end");
