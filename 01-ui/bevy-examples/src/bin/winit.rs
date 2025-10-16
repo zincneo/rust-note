@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 /**
 # bevy最小窗口
-- bevy本身性能是极好的，空场景占用大本质是DefaultPlugins引入了太多内容，要当作工具软件制作工具的话可以通过自行指定插件来优化占用
+- bevy空场景占用大量内存和资源主要是wgpu导致的
 - WinitPlugin插件依赖的最少插件(运行时能够正常运行)
     1. MinimalPlugins
     2. AssetPlugin
@@ -9,6 +9,7 @@ use bevy::prelude::*;
     4. ImagePlugin
     5. InputPlugin
 - windows下测试空窗口只占用5MB左右内存，并且配置了计划表循环一秒执行60次的情况下几乎不会占用CPU
+- 但是这样其实什么都不会渲染，Camera也没法使用
 */
 use std::time::Duration;
 
