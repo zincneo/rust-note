@@ -3,8 +3,9 @@ pub fn run() {
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
             .with_decorations(false) // Hide the OS-specific "chrome" around the window
-            .with_inner_size([400.0, 100.0])
-            .with_min_inner_size([400.0, 100.0])
+            .with_inner_size([1920.0, 1080.0])
+            .with_min_inner_size([1920.0, 1080.0])
+            .with_position([0.0, 0.0])
             .with_transparent(true), // To have rounded corners we need transparency
         ..Default::default()
     };
@@ -27,7 +28,7 @@ impl Frame {
 impl eframe::App for Frame {
     fn update(&mut self, ctx: &egui::Context, _: &mut eframe::Frame) {
         egui::CentralPanel::default()
-            .frame(egui::Frame::NONE.fill(egui::Color32::TRANSPARENT))
+            .frame(egui::Frame::NONE.fill(egui::Color32::WHITE))
             .show(ctx, |ui| {
                 let button_height = 12.0;
                 let close_response = ui
